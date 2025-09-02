@@ -58,11 +58,11 @@ class _SidePaneState extends State<SidePane> {
       child: Material(
         color: Theme.of(context).colorScheme.surface,
         child: ListView.separated(
-          padding: const EdgeInsets.only(top: 16),
+          padding: const EdgeInsets.only(top: 16, bottom: 16),
           itemCount: widget.destinations.length + 1,
           separatorBuilder: (context, index) {
             if (index == widget.destinations.length - 1) {
-              return const Divider();
+              return const Divider(height: 32);
             }
 
             return SizedBox(
@@ -71,7 +71,7 @@ class _SidePaneState extends State<SidePane> {
           },
           itemBuilder: (context, index) {
             if (index == widget.destinations.length) {
-              return DriveList(onDriveTap: widget.workspace.changeCurrentDir);
+              return DriveList(workspace: widget.workspace);
             }
 
             return ContextMenu(

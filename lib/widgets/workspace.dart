@@ -466,7 +466,6 @@ class _WorkspaceTopbar extends StatelessWidget {
       case WorkspaceView.grid:
         return YaruIcons.app_grid;
       case WorkspaceView.table:
-      default:
         return YaruIcons.unordered_list;
     }
   }

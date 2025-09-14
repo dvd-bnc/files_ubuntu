@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:files/backend/entity_info.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:files/backend/utils.dart';
 import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/double_scrollbars.dart';
@@ -18,15 +17,11 @@ import 'package:super_clipboard/src/format_conversions.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 import 'package:yaru/yaru.dart';
 
-typedef HeaderTapCallback = void Function(
-  bool newAscending,
-  int newColumnIndex,
-);
+typedef HeaderTapCallback =
+    void Function(bool newAscending, int newColumnIndex);
 
-typedef HeaderResizeCallback = void Function(
-  int newColumnIndex,
-  DragUpdateDetails details,
-);
+typedef HeaderResizeCallback =
+    void Function(int newColumnIndex, DragUpdateDetails details);
 
 class FilesTable extends StatelessWidget {
   const FilesTable({
@@ -109,10 +104,7 @@ class FilesTable extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ...columns.mapIndexed(
-              (index, column) => _buildHeaderCell(
-                column,
-                index,
-              ),
+              (index, column) => _buildHeaderCell(column, index),
             ),
             Container(
               width: rowHorizontalPadding,
@@ -127,17 +119,14 @@ class FilesTable extends StatelessWidget {
   Widget _buildRow(BuildContext context, int index) {
     final row = rows[index];
 
-    return Draggable<FileSystemEntity>(
+    return Draggable<fs.File>(
       childWhenDragging: _FilesRow(
         row: row,
         columns: columns,
         horizontalPadding: rowHorizontalPadding,
-        size: Size(
-          layoutWidth + (rowHorizontalPadding * 2),
-          rowHeight,
-        ),
+        size: Size(layoutWidth + (rowHorizontalPadding * 2), rowHeight),
       ),
-      data: row.entity.entity,
+      data: row.entity.file,
       dragAnchorStrategy: (draggable, context, position) {
         return const Offset(32, 32);
       },
@@ -158,10 +147,7 @@ class FilesTable extends StatelessWidget {
         row: row,
         columns: columns,
         horizontalPadding: rowHorizontalPadding,
-        size: Size(
-          layoutWidth + (rowHorizontalPadding * 2),
-          rowHeight,
-        ),
+        size: Size(layoutWidth + (rowHorizontalPadding * 2), rowHeight),
       ),
     );
   }
@@ -183,9 +169,7 @@ class FilesTable extends StatelessWidget {
       child: Container(
         width: column.normalizedWidth + startPadding,
         constraints: BoxConstraints(minWidth: startPadding + 80),
-        padding: EdgeInsetsDirectional.only(
-          start: startPadding.toDouble(),
-        ),
+        padding: EdgeInsetsDirectional.only(start: startPadding.toDouble()),
         child: Stack(
           clipBehavior: Clip.none,
           fit: StackFit.expand,
@@ -307,7 +291,7 @@ class _FilesRowState extends State<_FilesRow> {
 
   @override
   Widget build(BuildContext context) {
-    return DragTarget<FileSystemEntity>(
+    return DragTarget<fs.File>(
       onWillAcceptWithDetails: (details) {
         if (!widget.row.entity.isDirectory) return false;
 
@@ -321,11 +305,14 @@ class _FilesRowState extends State<_FilesRow> {
         return LayoutBuilder(
           builder: (context, constraints) {
             return Container(
-              constraints:
-                  BoxConstraints.tightForFinite(height: widget.size.height),
+              constraints: BoxConstraints.tightForFinite(
+                height: widget.size.height,
+              ),
               padding: EdgeInsetsDirectional.only(
-                end: (constraints.maxWidth - widget.size.width)
-                    .clamp(0, double.infinity),
+                end: (constraints.maxWidth - widget.size.width).clamp(
+                  0,
+                  double.infinity,
+                ),
               ),
               child: Material(
                 color: widget.row.selected
@@ -356,6 +343,12 @@ class _FilesRowState extends State<_FilesRow> {
 
                       await writer.write([item]);
                       print("Wrote"); */
+                    },
+                    onTrash: () async {
+                      final file = fs.File.fromPath(widget.row.entity.path);
+                      final operation = file.trash();
+                      final result = await operation.result;
+                      print(result);
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(
@@ -407,10 +400,13 @@ class _FilesRowState extends State<_FilesRow> {
           overflow: TextOverflow.ellipsis,
         );
       case FilesColumnType.type:
-        final fileExtension =
-            p.extension(entity.path).replaceAll('.', '').toUpperCase();
-        final fileLabel =
-            fileExtension.isNotEmpty ? 'File ($fileExtension)' : 'File';
+        final fileExtension = p
+            .extension(entity.path)
+            .replaceAll('.', '')
+            .toUpperCase();
+        final fileLabel = fileExtension.isNotEmpty
+            ? 'File ($fileExtension)'
+            : 'File';
         child = Text(
           entity.isDirectory ? 'Directory' : fileLabel,
           overflow: TextOverflow.ellipsis,

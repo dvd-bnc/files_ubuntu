@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io' show Platform, Process;
 
 import 'package:files/backend/folder_provider.dart';
 import 'package:files/backend/workspace.dart';
@@ -78,8 +78,9 @@ class _SidePaneState extends State<SidePane> {
               entries: [
                 ContextMenuItem(
                   child: const Text('Open'),
-                  onTap: () => widget.workspace
-                      .changeCurrentDir(widget.destinations[index].path),
+                  onTap: () => widget.workspace.changeCurrentDir(
+                    widget.destinations[index].path,
+                  ),
                 ),
                 ContextMenuItem(
                   child: const Text('Open in new tab'),
@@ -88,22 +89,21 @@ class _SidePaneState extends State<SidePane> {
                 ContextMenuItem(
                   child: const Text('Open in new window'),
                   onTap: () async {
-                    await Process.start(
-                      Platform.resolvedExecutable,
-                      [widget.destinations[index].path],
-                    );
+                    await Process.start(Platform.resolvedExecutable, [
+                      widget.destinations[index].path,
+                    ]);
                   },
                 ),
               ],
               child: YaruMasterTile(
                 leading: Icon(widget.destinations[index].icon),
-                selected: widget.workspace.currentDir ==
+                selected:
+                    widget.workspace.currentDir ==
                     widget.destinations[index].path,
-                title: Text(
-                  widget.destinations[index].label,
+                title: Text(widget.destinations[index].label),
+                onTap: () => widget.workspace.changeCurrentDir(
+                  widget.destinations[index].path,
                 ),
-                onTap: () => widget.workspace
-                    .changeCurrentDir(widget.destinations[index].path),
               ),
             );
           },

@@ -14,9 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import 'dart:io';
+import 'dart:io' show Platform;
 
 import 'package:collection/collection.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:files/backend/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:windows_path_provider/windows_path_provider.dart';
@@ -43,19 +44,18 @@ class FolderProvider {
         final type = folder.toFolderType();
         if (type == null) continue;
 
-        folders.add(BuiltinFolder(type, Directory(path)));
+        folders.add(BuiltinFolder(type, fs.File.fromPath(path)));
       }
     } else if (Platform.isLinux) {
       final dirNames = getUserDirectoryNames();
 
-      final backDir = getUserDirectory(dirNames.first)!
-          .path
-          .split(Platform.pathSeparator)
-        ..removeLast();
+      final backDir = getUserDirectory(
+        dirNames.first,
+      )!.path.split(Platform.pathSeparator)..removeLast();
       folders.add(
         BuiltinFolder(
           FolderType.home,
-          Directory(backDir.join(Platform.pathSeparator)),
+          fs.File.fromPath(backDir.join(Platform.pathSeparator)),
         ),
       );
 
@@ -66,7 +66,7 @@ class FolderProvider {
         folders.add(
           BuiltinFolder(
             type,
-            Directory(getUserDirectory(element)!.path),
+            fs.File.fromPath(getUserDirectory(element)!.path),
           ),
         );
       }
@@ -107,16 +107,16 @@ enum FolderType {
   templates;
 
   static FolderType? fromString(String value) {
-    return FolderType.values
-        .asNameMap()
-        .map((k, v) => MapEntry(k.toUpperCase(), v))[value.toUpperCase()];
+    return FolderType.values.asNameMap().map(
+      (k, v) => MapEntry(k.toUpperCase(), v),
+    )[value.toUpperCase()];
   }
 }
 
 class BuiltinFolder {
   const BuiltinFolder(this.type, this.directory);
   final FolderType type;
-  final Directory directory;
+  final fs.File directory;
 }
 
 class SideDestination {

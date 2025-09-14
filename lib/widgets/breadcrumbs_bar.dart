@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:files/backend/folder_provider.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:files/backend/path_parts.dart';
 import 'package:files/backend/providers.dart';
 import 'package:files/backend/utils.dart';
@@ -75,8 +74,9 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Material(
-                    color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                       side: !focusNode.hasFocus
@@ -129,8 +129,9 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
 
       // We need home folder on last position here to emulate a low priority entry
       final sortedFolders = folderProvider.folders;
-      final homeIndex =
-          sortedFolders.indexWhere((e) => e.type == FolderType.home);
+      final homeIndex = sortedFolders.indexWhere(
+        (e) => e.type == FolderType.home,
+      );
       sortedFolders.add(sortedFolders.removeAt(homeIndex));
 
       final builtinFolder = sortedFolders.firstWhereOrNull(
@@ -158,7 +159,8 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
       return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          final isInsideBuiltin = builtinFolder != null &&
+          final isInsideBuiltin =
+              builtinFolder != null &&
               actualParts[index].toPath() == builtinFolder.directory.path;
 
           return _BreadcrumbChip(
@@ -185,11 +187,7 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
 }
 
 class _BreadcrumbChip extends StatelessWidget {
-  const _BreadcrumbChip({
-    required this.path,
-    this.onTap,
-    this.childOverride,
-  });
+  const _BreadcrumbChip({required this.path, this.onTap, this.childOverride});
 
   final PathParts path;
   final ValueChanged<String>? onTap;
@@ -199,7 +197,7 @@ class _BreadcrumbChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: double.infinity,
-      child: DragTarget<FileSystemEntity>(
+      child: DragTarget<fs.File>(
         onAcceptWithDetails: (details) =>
             Utils.moveFileToDest(details.data, path.toPath()),
         builder: (context, candidateData, rejectedData) {
@@ -223,10 +221,7 @@ class _BreadcrumbChip extends StatelessWidget {
 }
 
 class _LoadingIndicator extends StatefulWidget {
-  const _LoadingIndicator({
-    required this.progress,
-    required this.child,
-  });
+  const _LoadingIndicator({required this.progress, required this.child});
   final double? progress;
   final Widget child;
 

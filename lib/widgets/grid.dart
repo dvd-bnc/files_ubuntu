@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:files/backend/entity_info.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:files/backend/utils.dart';
 import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/entity_context_menu.dart';
@@ -64,9 +63,9 @@ class _FilesGridState extends State<FilesGrid> {
           itemBuilder: (context, index) {
             final entityInfo = widget.entities[index];
 
-            return Draggable<FileSystemEntity>(
-              data: entityInfo.entity,
-              dragAnchorStrategy: (_, __, ___) => const Offset(32, 32),
+            return Draggable<fs.File>(
+              data: entityInfo.file,
+              dragAnchorStrategy: (_, _, _) => const Offset(32, 32),
               feedback: Material(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6),
@@ -120,7 +119,7 @@ class FileCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DragTarget<FileSystemEntity>(
+    return DragTarget<fs.File>(
       onWillAcceptWithDetails: (details) {
         if (!entity.isDirectory) return false;
 
@@ -129,11 +128,9 @@ class FileCell extends StatelessWidget {
         return true;
       },
       onAcceptWithDetails: (_) => onDropAccept?.call(entity.path),
-      builder: (context, _, __) => Material(
+      builder: (context, _, _) => Material(
         clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         color: selected
             ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
             : Colors.transparent,
@@ -185,12 +182,7 @@ class Cell extends StatelessWidget {
       children: [
         const SizedBox(height: 8),
         Expanded(
-          child: _ConstrainedIcon(
-            child: Icon(
-              icon,
-              color: iconColor,
-            ),
-          ),
+          child: _ConstrainedIcon(child: Icon(icon, color: iconColor)),
         ),
         const SizedBox(height: 8),
         DefaultTextStyle(
@@ -215,9 +207,9 @@ class _ConstrainedIcon extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return IconTheme(
-          data: Theme.of(context)
-              .iconTheme
-              .copyWith(size: constraints.biggest.shortestSide),
+          data: Theme.of(
+            context,
+          ).iconTheme.copyWith(size: constraints.biggest.shortestSide),
           child: child,
         );
       },

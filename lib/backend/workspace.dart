@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:files/backend/entity_info.dart';
 import 'package:files/backend/fetch.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -53,11 +54,12 @@ class WorkspaceController with ChangeNotifier {
     _gridState = const GridViewState(size: 96);
   }
 
-  Future<void> getInfoForDir(Directory dir) async {
-    await _fetcher?.cancel();
+  Future<void> getInfoForDir(fs.File dir) async {
+    /* await */
+    _fetcher?.cancel();
     _lastError = null;
     _fetcher = CancelableFsFetch(
-      directory: dir,
+      source: dir,
       onFetched: (data) {
         _currentInfo = data;
         notifyListeners();
@@ -69,10 +71,6 @@ class WorkspaceController with ChangeNotifier {
       showHidden: _showHidden,
       ascending: _ascending,
       sortType: _sortType,
-      onFileSystemException: (value) {
-        _lastError = value;
-        notifyListeners();
-      },
     );
     await _fetcher!.startFetch();
   }
@@ -164,9 +162,10 @@ class WorkspaceController with ChangeNotifier {
     clearCurrentInfo();
     clearSelectedItems();
     await _directoryStream?.cancel();
-    await getInfoForDir(Directory(newDir));
-    _directoryStream =
-        Directory(newDir).watch().listen(_directoryStreamListener);
+    await getInfoForDir(fs.File.fromPath(newDir));
+    _directoryStream = Directory(
+      newDir,
+    ).watch().listen(_directoryStreamListener);
   }
 
   void setHistoryOffset(int offset) {
@@ -185,7 +184,7 @@ class WorkspaceController with ChangeNotifier {
   bool get canGoToNextHistoryEntry => _historyOffset != 0;
 
   Future<void> _directoryStreamListener(FileSystemEvent event) async {
-    await getInfoForDir(Directory(currentDir));
+    await getInfoForDir(fs.File.fromPath(currentDir));
   }
 
   static WorkspaceController of(BuildContext context, {bool listen = true}) {
@@ -205,12 +204,7 @@ class TableViewState {
   final double thirdWidth;
   final double fourthWidth;
 
-  List<double> get widths => [
-        firstWidth,
-        secondWidth,
-        thirdWidth,
-        fourthWidth,
-      ];
+  List<double> get widths => [firstWidth, secondWidth, thirdWidth, fourthWidth];
 
   TableViewState copyWith({
     double? firstWidth,
@@ -243,8 +237,6 @@ class TableViewState {
 }
 
 class GridViewState {
-  const GridViewState({
-    required this.size,
-  });
+  const GridViewState({required this.size});
   final double size;
 }

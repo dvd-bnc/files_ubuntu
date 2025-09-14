@@ -11,6 +11,7 @@ class EntityContextMenu extends StatelessWidget {
     this.onCopy,
     this.onCut,
     this.onPaste,
+    this.onTrash,
     super.key,
   });
 
@@ -20,6 +21,7 @@ class EntityContextMenu extends StatelessWidget {
   final VoidCallback? onCopy;
   final VoidCallback? onCut;
   final VoidCallback? onPaste;
+  final VoidCallback? onTrash;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,8 @@ class EntityContextMenu extends StatelessWidget {
         if (onCopy != null)
           const SingleActivator(LogicalKeyboardKey.keyC, control: true):
               onCopy!,
+        if (onTrash != null)
+          const SingleActivator(LogicalKeyboardKey.cancel): onTrash!,
       },
       child: ContextMenu(
         entries: [
@@ -46,22 +50,35 @@ class EntityContextMenu extends StatelessWidget {
             leading: const Icon(YaruIcons.copy),
             child: const Text('Copy file'),
             onTap: onCopy,
-            shortcut:
-                const SingleActivator(LogicalKeyboardKey.keyC, control: true),
+            shortcut: const SingleActivator(
+              LogicalKeyboardKey.keyC,
+              control: true,
+            ),
           ),
           ContextMenuItem(
             leading: const Icon(YaruIcons.cut),
             child: const Text('Cut file'),
             onTap: onCut,
-            shortcut:
-                const SingleActivator(LogicalKeyboardKey.keyX, control: true),
+            shortcut: const SingleActivator(
+              LogicalKeyboardKey.keyX,
+              control: true,
+            ),
           ),
           ContextMenuItem(
             leading: const Icon(YaruIcons.paste),
             child: const Text('Paste file'),
             onTap: onPaste,
-            shortcut:
-                const SingleActivator(LogicalKeyboardKey.keyV, control: true),
+            shortcut: const SingleActivator(
+              LogicalKeyboardKey.keyV,
+              control: true,
+            ),
+          ),
+          const ContextMenuDivider(),
+          ContextMenuItem(
+            leading: const Icon(YaruIcons.trash),
+            child: const Text('Move to trash'),
+            onTap: onTrash,
+            shortcut: const SingleActivator(LogicalKeyboardKey.cancel),
           ),
         ],
         child: child,

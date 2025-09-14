@@ -1,109 +1,83 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:collection';
 
+import 'package:files/backend/database/model.dart';
 import 'package:files/backend/entity_info.dart';
-import 'package:files/backend/providers.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:files/backend/utils.dart';
 import 'package:flutter/foundation.dart';
 
-enum SortType {
-  name,
-  modified,
-  type,
-  size,
-}
+enum SortType { name, modified, type, size }
 
 class CancelableFsFetch {
-  final Directory directory;
+  final fs.File source;
   final ValueChanged<List<EntityInfo>?> onFetched;
   final VoidCallback? onCancel;
   final ValueChanged<double?>? onProgressChange;
-  final ValueChanged<OSError?>? onFileSystemException;
   final bool ascending;
   final SortType sortType;
   final bool showHidden;
 
   CancelableFsFetch({
-    required this.directory,
+    required this.source,
     required this.onFetched,
     this.onCancel,
     this.onProgressChange,
-    this.onFileSystemException,
     this.ascending = false,
     this.sortType = SortType.name,
     this.showHidden = false,
   });
 
-  bool _running = false;
-  Completer<void> cancelableCompleter = Completer<void>();
-  bool _cancelled = false;
-  bool get cancelled => _cancelled;
+  final fs.Cancellable cancellable = fs.Cancellable();
+
+  bool get cancelled => cancellable.isCancelled;
 
   Future<void> startFetch() async {
-    if (_cancelled) throw CancelledException();
+    if (cancelled) throw CancelledException();
+
+    final enumeratorOp = source.getEnumerator();
+    final enumerator = await enumeratorOp.result;
 
     onProgressChange?.call(0.0);
-    late final List<FileSystemEntity> list;
-    try {
-      list = await directory
-          .list()
-          .where(
-            (element) =>
-                !Utils.getEntityName(element.path).startsWith('.') ||
-                showHidden,
-          )
-          .toList();
-    } on FileSystemException catch (e) {
-      onFileSystemException?.call(e.osError);
-      _cancelled = true;
-      return;
-    }
-    final directories = <EntityInfo>[];
-    final files = <EntityInfo>[];
 
-    _running = true;
-    for (var i = 0; i < list.length; i++) {
-      if (_cancelled) {
-        onCancel?.call();
-        cancelableCompleter.complete();
-        return;
+    final directories = SplayTreeSet<EntityInfo>(
+      (a, b) => _sort(a, b, isDirectory: true)!,
+    );
+    final files = SplayTreeSet<EntityInfo>(
+      (a, b) => _sort(a, b, isDirectory: false)!,
+    );
+
+    while (true) {
+      final enumerateOp = enumerator.enumerate(cancellable: cancellable);
+      final fileList = await enumerateOp.result;
+
+      if (fileList == null) break;
+
+      for (final info in fileList.iterable()) {
+        if (!showHidden && info.isHidden()) continue;
+        final file = enumerator.getFile(info);
+        if (file == null) continue;
+
+        print('${file.path}: ${info.getFileType()}');
+
+        final stat = EntityStat.fromFileInfo(file.path, info);
+
+        switch (stat.type) {
+          case EntityType.file:
+            files.add(EntityInfo(file, stat, stat.type));
+          case EntityType.directory:
+            directories.add(EntityInfo(file, stat, stat.type));
+          default:
+            break;
+        }
       }
-
-      late final EntityInfo info;
-
-      if (list[i] is Directory) {
-        info = DirectoryEntityInfo(
-          entity: list[i] as Directory,
-          stat: await cacheProxy.get(list[i].path),
-        );
-        directories.add(info);
-      } else if (list[i] is File) {
-        info = FileEntityInfo(
-          entity: list[i] as File,
-          stat: await cacheProxy.get(list[i].path),
-        );
-        files.add(info);
-      } else if (list[i] is Link) {
-        (list[i] as Link).path;
-      }
-
-      onProgressChange?.call((i + 1) / list.length);
+      fileList.destroy();
     }
-    _running = false;
 
-    directories.sort((a, b) => _sort(a, b, isDirectory: true)!);
-    files.sort((a, b) => _sort(a, b)!);
-
-    onProgressChange?.call(null);
-
-    if (!_cancelled) onFetched.call([...directories, ...files]);
+    if (!cancelled) onFetched.call([...directories, ...files]);
   }
 
-  int? _sort(
-    EntityInfo a,
-    EntityInfo b, {
-    bool isDirectory = false,
-  }) {
+  int? _sort(EntityInfo a, EntityInfo b, {bool isDirectory = false}) {
     EntityInfo item1 = a;
     EntityInfo item2 = b;
 
@@ -114,8 +88,9 @@ class CancelableFsFetch {
 
     switch (sortType.index) {
       case 0:
-        return Utils.getEntityName(item1.path.toLowerCase())
-            .compareTo(Utils.getEntityName(item2.path.toLowerCase()));
+        return Utils.getEntityName(
+          item1.path.toLowerCase(),
+        ).compareTo(Utils.getEntityName(item2.path.toLowerCase()));
       case 1:
         return item1.stat.modified.compareTo(item2.stat.modified);
       case 2:
@@ -131,10 +106,10 @@ class CancelableFsFetch {
     return null;
   }
 
-  Future<void> cancel() async {
-    if (!_running) return;
-    _cancelled = true;
-    await cancelableCompleter.future;
+  void cancel() async {
+    if (cancellable.isCancelled) return;
+
+    cancellable.cancel();
   }
 }
 

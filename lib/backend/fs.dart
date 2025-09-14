@@ -282,10 +282,13 @@ class File implements Finalizable {
     );
   }
 
-  TransferFileOperation copy({required File to, Cancellable? cancellable}) {
+  TransferFileOperation copy({
+    required File destination,
+    Cancellable? cancellable,
+  }) {
     return TransferFileOperation._(
       source: this,
-      destination: to,
+      destination: destination,
       copy: true,
       cancellable: cancellable,
     );
@@ -324,10 +327,13 @@ class File implements Finalizable {
     );
   }
 
-  TransferFileOperation move({required File to, Cancellable? cancellable}) {
+  TransferFileOperation move({
+    required File destination,
+    Cancellable? cancellable,
+  }) {
     return TransferFileOperation._(
       source: this,
-      destination: to,
+      destination: destination,
       copy: false,
       cancellable: cancellable,
     );

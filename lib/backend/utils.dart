@@ -78,6 +78,8 @@ class Utils {
       directoryParts.parts..add(originParts.parts.last),
       originParts.separator,
     );
-    return origin.move(to: fs.File.fromPath(destinationParts.toPath()));
+    return origin.move(
+      destination: fs.File.fromPath(destinationParts.toPath()),
+    );
   }
 }

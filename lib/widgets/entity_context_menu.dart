@@ -31,7 +31,7 @@ class EntityContextMenu extends StatelessWidget {
           const SingleActivator(LogicalKeyboardKey.keyC, control: true):
               onCopy!,
         if (onTrash != null)
-          const SingleActivator(LogicalKeyboardKey.cancel): onTrash!,
+          const SingleActivator(LogicalKeyboardKey.delete): onTrash!,
       },
       child: ContextMenu(
         entries: [
@@ -78,7 +78,7 @@ class EntityContextMenu extends StatelessWidget {
             leading: const Icon(YaruIcons.trash),
             child: const Text('Move to trash'),
             onTap: onTrash,
-            shortcut: const SingleActivator(LogicalKeyboardKey.cancel),
+            shortcut: const SingleActivator(LogicalKeyboardKey.delete),
           ),
         ],
         child: child,

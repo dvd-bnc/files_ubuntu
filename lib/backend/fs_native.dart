@@ -33,6 +33,9 @@ final class GList extends Struct {
   external final Pointer<GList> previous;
 }
 
+@Native<Void Function(Pointer<Void>)>()
+external void obj_unref(Pointer<Void> obj);
+
 @Native<Pointer<GCancellable> Function()>()
 external Pointer<GCancellable> cancellable_new();
 

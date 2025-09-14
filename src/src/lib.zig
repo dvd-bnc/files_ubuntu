@@ -482,3 +482,8 @@ pub export fn error_domain_name(err: *c.GError) [*c]const u8 {
 pub export fn list_destroy(list: [*c]c.GList) void {
     c.g_list_free(list);
 }
+
+// -------- MEMORY -------- //
+pub export fn obj_unref(obj: ?*anyopaque) void {
+    c.g_object_unref(obj);
+}

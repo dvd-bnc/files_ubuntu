@@ -241,7 +241,13 @@ class TransferFileOperation extends BaseFileSystemOperation<bool> {
   }
 }
 
-extension type File._(Pointer<GFile> _handle) implements Object {
+final NativeFinalizer _finalizer = NativeFinalizer(Native.addressOf(obj_unref));
+
+class File implements Finalizable {
+  File._(this._handle) {
+    _finalizer.attach(this, _handle.cast());
+  }
+
   static File fromRawPath(Pointer<Char> path) {
     final res = file_new(path);
 
@@ -256,6 +262,8 @@ extension type File._(Pointer<GFile> _handle) implements Object {
       return File._(res);
     });
   }
+
+  final Pointer<GFile> _handle;
 
   String get path => file_path(_handle).cast<Utf8>().toDartString();
   File? get parent {
@@ -359,7 +367,12 @@ extension type File._(Pointer<GFile> _handle) implements Object {
   }
 }
 
-extension type FileInfo._(Pointer<GFileInfo> _handle) {
+class FileInfo implements Finalizable {
+  FileInfo._(this._handle) {
+    _finalizer.attach(this, _handle.cast());
+  }
+
+  final Pointer<GFileInfo> _handle;
   String? getName() {
     final name = fileinfo_get_name(_handle);
     if (name == nullptr) return null;

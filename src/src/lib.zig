@@ -18,7 +18,7 @@ pub fn AsyncResultCallback(comptime T: type) type {
 
 pub const LoopControl = extern struct { quit: bool = false };
 
-const file_progress_callback = *fn (f32) void;
+const file_progress_callback = *fn (c_long, c_long) void;
 
 // -------- ASYNC -------- //
 fn ioThread(user_data: ?*anyopaque) callconv(.c) ?*anyopaque {
@@ -195,7 +195,7 @@ fn fileProgress(current: c_long, total: c_long, user_data: ?*anyopaque) callconv
     if (user_data == null) return;
 
     const callback: file_progress_callback = @ptrCast(user_data);
-    callback(@as(f32, @floatFromInt(current)) / @as(f32, @floatFromInt(total)));
+    callback(current, total);
 }
 
 fn fileCopyFinish(obj: [*c]c.GObject, result: ?*c.GAsyncResult, user_data: ?*anyopaque) callconv(.c) void {

@@ -190,10 +190,10 @@ class TransferFileOperation extends BaseFileSystemOperation<bool> {
   final bool allowOverwrite;
 
   late final NativeCallable<Void Function(Bool)> _completeCallable;
-  late final NativeCallable<Void Function(Float)> _progressCallable;
-  final ValueNotifier<double> _progress = ValueNotifier(0);
+  late final NativeCallable<Void Function(Long, Long)> _progressCallable;
+  final ValueNotifier<(int, int)> _progress = ValueNotifier((0, 0));
 
-  ValueListenable<double> get progress => _progress;
+  ValueListenable<(int currentBytes, int totalBytes)> get progress => _progress;
 
   @override
   void _start() {
@@ -223,7 +223,7 @@ class TransferFileOperation extends BaseFileSystemOperation<bool> {
   @override
   void _create() {
     super._create();
-    _progressCallable = NativeCallable<Void Function(Float)>.listener(
+    _progressCallable = NativeCallable<Void Function(Long, Long)>.listener(
       _onProgress,
     );
     _completeCallable = NativeCallable<Void Function(Bool)>.listener(
@@ -238,8 +238,8 @@ class TransferFileOperation extends BaseFileSystemOperation<bool> {
     super._destroy();
   }
 
-  void _onProgress(double progress) {
-    _progress.value = progress;
+  void _onProgress(int current, int total) {
+    _progress.value = (current, total);
   }
 }
 

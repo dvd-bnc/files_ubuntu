@@ -170,7 +170,7 @@ external void file_query_info(
     Pointer<GFile>,
     Uint32,
     Pointer<GCancellable>,
-    Pointer<NativeFunction<Void Function(Float)>>,
+    Pointer<NativeFunction<Void Function(Long, Long)>>,
     Pointer<NativeFunction<Void Function(Bool)>>,
     Pointer<Pointer<GError>>,
   )
@@ -180,7 +180,7 @@ external void file_copy(
   Pointer<GFile> dst,
   int flags,
   Pointer<GCancellable> cancellable,
-  Pointer<NativeFunction<Void Function(Float)>> progressCallback,
+  Pointer<NativeFunction<Void Function(Long, Long)>> progressCallback,
   Pointer<NativeFunction<Void Function(Bool)>> resultCallback,
   Pointer<Pointer<GError>> error,
 );
@@ -191,7 +191,7 @@ external void file_copy(
     Pointer<GFile>,
     Uint32,
     Pointer<GCancellable>,
-    Pointer<NativeFunction<Void Function(Float)>>,
+    Pointer<NativeFunction<Void Function(Long, Long)>>,
     Pointer<NativeFunction<Void Function(Bool)>>,
     Pointer<Pointer<GError>>,
   )
@@ -201,7 +201,7 @@ external bool file_move(
   Pointer<GFile> dst,
   int flags,
   Pointer<GCancellable> cancellable,
-  Pointer<NativeFunction<Void Function(Float)>> progressCallback,
+  Pointer<NativeFunction<Void Function(Long, Long)>> progressCallback,
   Pointer<NativeFunction<Void Function(Bool)>> resultCallback,
   Pointer<Pointer<GError>> error,
 );

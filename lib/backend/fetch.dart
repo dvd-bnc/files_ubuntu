@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:files/backend/database/model.dart';
 import 'package:files/backend/entity_info.dart';
@@ -35,17 +34,22 @@ class CancelableFsFetch {
   Future<void> startFetch() async {
     if (cancelled) throw CancelledException();
 
-    final enumeratorOp = source.getEnumerator();
+    final enumeratorOp = source.getEnumerator(
+      attributes:
+          'standard::name,standard::type,standard::size,standard::is-hidden,time::*',
+    );
     final enumerator = await enumeratorOp.result;
 
     onProgressChange?.call(0.0);
 
-    final directories = SplayTreeSet<EntityInfo>(
-      (a, b) => _sort(a, b, isDirectory: true)!,
-    );
-    final files = SplayTreeSet<EntityInfo>(
-      (a, b) => _sort(a, b, isDirectory: false)!,
-    );
+    // final directories = SortedList<EntityInfo>(
+    //   (a, b) => _sort(a, b, isDirectory: true)!,
+    // );
+    // final files = SortedList<EntityInfo>(
+    //   (a, b) => _sort(a, b, isDirectory: false)!,
+    // );
+    final directories = <EntityInfo>[];
+    final files = <EntityInfo>[];
 
     while (true) {
       final enumerateOp = enumerator.enumerate(cancellable: cancellable);
@@ -71,6 +75,8 @@ class CancelableFsFetch {
       }
       fileList.destroy();
     }
+    directories.sort((a, b) => _sort(a, b, isDirectory: true)!);
+    files.sort((a, b) => _sort(a, b, isDirectory: false)!);
 
     if (!cancelled) onFetched.call([...directories, ...files]);
   }
@@ -95,7 +101,9 @@ class CancelableFsFetch {
         return 0;
       case 3:
         if (isDirectory) {
-          return 0;
+          return Utils.getEntityName(
+            item1.path.toLowerCase(),
+          ).compareTo(Utils.getEntityName(item2.path.toLowerCase()));
         } else {
           return item1.stat.size.compareTo(item2.stat.size);
         }

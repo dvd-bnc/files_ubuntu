@@ -1,7 +1,3 @@
-const _file = @import("file");
-const _file_enum = @import("file_enum");
-const _misc = @import("misc");
-
 const std = @import("std");
 const c = @cImport({
     @cInclude("glib.h");
@@ -393,7 +389,9 @@ pub export fn fileinfo_get_file_type(info: *c.GFileInfo) c_uint {
 pub export fn fileinfo_get_creation_time(info: *c.GFileInfo) ?[*]const u8 {
     const time = c.g_file_info_get_creation_date_time(info);
     if (time) |_time| {
-        return c.g_date_time_format_iso8601(_time);
+        const iso_str = c.g_date_time_format_iso8601(_time);
+        c.g_date_time_unref(time);
+        return iso_str;
     }
     return null;
 }
@@ -401,7 +399,9 @@ pub export fn fileinfo_get_creation_time(info: *c.GFileInfo) ?[*]const u8 {
 pub export fn fileinfo_get_access_time(info: *c.GFileInfo) ?[*]const u8 {
     const time = c.g_file_info_get_access_date_time(info);
     if (time) |_time| {
-        return c.g_date_time_format_iso8601(_time);
+        const iso_str = c.g_date_time_format_iso8601(_time);
+        c.g_date_time_unref(time);
+        return iso_str;
     }
     return null;
 }
@@ -409,7 +409,9 @@ pub export fn fileinfo_get_access_time(info: *c.GFileInfo) ?[*]const u8 {
 pub export fn fileinfo_get_modification_time(info: *c.GFileInfo) ?[*]const u8 {
     const time = c.g_file_info_get_modification_date_time(info);
     if (time) |_time| {
-        return c.g_date_time_format_iso8601(_time);
+        const iso_str = c.g_date_time_format_iso8601(_time);
+        c.g_date_time_unref(time);
+        return iso_str;
     }
     return null;
 }

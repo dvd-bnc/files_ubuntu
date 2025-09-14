@@ -7,15 +7,6 @@ import 'package:ffi/ffi.dart';
 import 'package:files/backend/fs_native.dart';
 import 'package:flutter/foundation.dart';
 
-// !copy: progress, cancellable, error (source, dest)
-// !create: cancellable, error (source)
-// !delete: cancellable, error (source)
-// !enumerate: cancellable, error (source)
-// make_directory: cancellable, error (source)
-// !move: progress, cancellable, error (source, dest)
-// !query_info: cancellable, error (source)
-// !trash: cancellable, error (source)
-
 void initFileSystemThread() {
   // TODO: handle pointer management
   init_io_thread();

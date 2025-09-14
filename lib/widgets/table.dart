@@ -347,8 +347,7 @@ class _FilesRowState extends State<_FilesRow> {
                     onTrash: () async {
                       final file = fs.File.fromPath(widget.row.entity.path);
                       final operation = file.trash();
-                      final result = await operation.result;
-                      print(result);
+                      await operation.result;
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(

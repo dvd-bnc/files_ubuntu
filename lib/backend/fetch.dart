@@ -58,8 +58,6 @@ class CancelableFsFetch {
         final file = enumerator.getFile(info);
         if (file == null) continue;
 
-        print('${file.path}: ${info.getFileType()}');
-
         final stat = EntityStat.fromFileInfo(file.path, info);
 
         switch (stat.type) {

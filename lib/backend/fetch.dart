@@ -9,25 +9,24 @@ import 'package:flutter/foundation.dart';
 enum SortType { name, modified, type, size }
 
 class CancelableFsFetch {
-  final fs.File source;
-  final ValueChanged<List<EntityInfo>?> onFetched;
-  final VoidCallback? onCancel;
-  final ValueChanged<double?>? onProgressChange;
-  final bool ascending;
-  final SortType sortType;
-  final bool showHidden;
-
   CancelableFsFetch({
     required this.source,
     required this.onFetched,
     this.onCancel,
-    this.onProgressChange,
     this.ascending = false,
     this.sortType = SortType.name,
     this.showHidden = false,
   });
 
+  final fs.File source;
+  final ValueChanged<List<EntityInfo>?> onFetched;
+  final VoidCallback? onCancel;
+  final bool ascending;
+  final SortType sortType;
+  final bool showHidden;
+
   final fs.Cancellable cancellable = fs.Cancellable();
+  final Completer<void> _cancellableCompleter = Completer();
 
   bool get cancelled => cancellable.isCancelled;
 
@@ -40,20 +39,23 @@ class CancelableFsFetch {
     );
     final enumerator = await enumeratorOp.result;
 
-    onProgressChange?.call(0.0);
-
-    // final directories = SortedList<EntityInfo>(
-    //   (a, b) => _sort(a, b, isDirectory: true)!,
-    // );
-    // final files = SortedList<EntityInfo>(
-    //   (a, b) => _sort(a, b, isDirectory: false)!,
-    // );
     final directories = <EntityInfo>[];
     final files = <EntityInfo>[];
 
     while (true) {
-      final enumerateOp = enumerator.enumerate(cancellable: cancellable);
-      final fileList = await enumerateOp.result;
+      final fs.FileList? fileList;
+      try {
+        final enumerateOp = enumerator.enumerate(cancellable: cancellable);
+        fileList = await enumerateOp.result;
+      } on fs.NativeException catch (e) {
+        // G_IO_CANCELLED
+        if (e.code == 19) {
+          _cancellableCompleter.complete();
+          return;
+        }
+
+        rethrow;
+      }
 
       if (fileList == null) break;
 
@@ -75,6 +77,9 @@ class CancelableFsFetch {
       }
       fileList.destroy();
     }
+
+    _cancellableCompleter.complete();
+
     directories.sort((a, b) => _sort(a, b, isDirectory: true)!);
     files.sort((a, b) => _sort(a, b, isDirectory: false)!);
 
@@ -112,10 +117,11 @@ class CancelableFsFetch {
     return null;
   }
 
-  void cancel() async {
+  Future<void> cancel() async {
     if (cancellable.isCancelled) return;
 
     cancellable.cancel();
+    return _cancellableCompleter.future;
   }
 }
 

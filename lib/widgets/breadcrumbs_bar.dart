@@ -13,7 +13,6 @@ class BreadcrumbsBar extends StatefulWidget {
     this.onPathSubmitted,
     this.leading,
     this.actions,
-    this.loadingProgress,
     super.key,
   });
 
@@ -22,7 +21,6 @@ class BreadcrumbsBar extends StatefulWidget {
   final ValueChanged<String>? onPathSubmitted;
   final List<Widget>? leading;
   final List<Widget>? actions;
-  final double? loadingProgress;
 
   @override
   State<BreadcrumbsBar> createState() => _BreadcrumbsBarState();
@@ -86,17 +84,14 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
                           : BorderSide.none,
                     ),
                     clipBehavior: Clip.antiAlias,
-                    child: _LoadingIndicator(
-                      progress: widget.loadingProgress,
-                      child: GestureDetector(
-                        onTap: () {
-                          FocusScope.of(context).requestFocus(focusNode);
-                        },
-                        child: Container(
-                          height: double.infinity,
-                          alignment: AlignmentDirectional.centerStart,
-                          child: _guts,
-                        ),
+                    child: GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).requestFocus(focusNode);
+                      },
+                      child: Container(
+                        height: double.infinity,
+                        alignment: AlignmentDirectional.centerStart,
+                        child: _guts,
                       ),
                     ),
                   ),
@@ -216,97 +211,6 @@ class _BreadcrumbChip extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-}
-
-class _LoadingIndicator extends StatefulWidget {
-  const _LoadingIndicator({required this.progress, required this.child});
-  final double? progress;
-  final Widget child;
-
-  @override
-  _LoadingIndicatorState createState() => _LoadingIndicatorState();
-}
-
-class _LoadingIndicatorState extends State<_LoadingIndicator>
-    with TickerProviderStateMixin {
-  late AnimationController fadeController;
-  late AnimationController progressController;
-
-  @override
-  void initState() {
-    super.initState();
-    fadeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 250),
-      value: widget.progress != null ? 1 : 0,
-    );
-    progressController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 150),
-      value: widget.progress,
-    );
-  }
-
-  @override
-  void dispose() {
-    fadeController.dispose();
-    progressController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant _LoadingIndicator old) {
-    super.didUpdateWidget(old);
-
-    _updateController(old);
-  }
-
-  Future<void> _updateController(_LoadingIndicator old) async {
-    if (widget.progress != old.progress) {
-      if (widget.progress != null && old.progress == null) {
-        fadeController.value = 1;
-        await progressController.animateTo(widget.progress!);
-      } else if (widget.progress == null && old.progress != null) {
-        await fadeController.reverse();
-        progressController.value = 0;
-      } else if (widget.progress != null && old.progress != null) {
-        if (widget.progress! > old.progress!) {
-          await progressController.animateTo(widget.progress!);
-        } else if (widget.progress! < old.progress!) {
-          await progressController.animateBack(widget.progress!);
-        }
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: Listenable.merge([progressController, fadeController]),
-      builder: (context, child) {
-        return Stack(
-          children: [
-            child!,
-            Positioned.directional(
-              textDirection: Directionality.of(context),
-              top: 12,
-              bottom: 12,
-              end: 12,
-              width: 16,
-              child: FadeTransition(
-                opacity: fadeController,
-                child: CircularProgressIndicator(
-                  value: progressController.value,
-                  strokeWidth: 2,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-      child: widget.child,
     );
   }
 }

@@ -448,7 +448,6 @@ class _WorkspaceTopbar extends StatelessWidget {
             },
           ),
       ],
-      loadingProgress: controller.loadingProgress,
     );
   }
 

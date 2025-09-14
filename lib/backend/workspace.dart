@@ -26,7 +26,6 @@ class WorkspaceController with ChangeNotifier {
   // Loading related
   late String _currentDir;
   List<EntityInfo>? _currentInfo;
-  double? _loadingProgress;
   OSError? _lastError;
 
   // Sort, view and selection
@@ -55,17 +54,13 @@ class WorkspaceController with ChangeNotifier {
   }
 
   Future<void> getInfoForDir(fs.File dir) async {
-    /* await */
-    _fetcher?.cancel();
+    await _fetcher?.cancel();
     _lastError = null;
+    _fetcher?.cancellable.destroy();
     _fetcher = CancelableFsFetch(
       source: dir,
       onFetched: (data) {
         _currentInfo = data;
-        notifyListeners();
-      },
-      onProgressChange: (value) {
-        _loadingProgress = value;
         notifyListeners();
       },
       showHidden: _showHidden,
@@ -77,7 +72,6 @@ class WorkspaceController with ChangeNotifier {
 
   List<EntityInfo>? get currentInfo =>
       _currentInfo != null ? List.unmodifiable(_currentInfo!) : null;
-  double? get loadingProgress => _loadingProgress;
 
   void clearCurrentInfo() {
     _currentInfo = null;

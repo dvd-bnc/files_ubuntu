@@ -180,12 +180,14 @@ class TransferFileOperation extends BaseFileSystemOperation<bool> {
     required this.source,
     required this.destination,
     this.copy = false,
+    this.allowOverwrite = false,
     super.cancellable,
   });
 
   final File source;
   final File destination;
   final bool copy;
+  final bool allowOverwrite;
 
   late final NativeCallable<Void Function(Bool)> _completeCallable;
   late final NativeCallable<Void Function(Float)> _progressCallable;
@@ -199,7 +201,7 @@ class TransferFileOperation extends BaseFileSystemOperation<bool> {
       file_copy(
         source._handle,
         destination._handle,
-        1, // ALLOW_OVERWRITE
+        allowOverwrite ? 1 : 0,
         _cancellable._handle,
         _progressCallable.nativeFunction,
         _completeCallable.nativeFunction,
@@ -209,7 +211,7 @@ class TransferFileOperation extends BaseFileSystemOperation<bool> {
       file_move(
         source._handle,
         destination._handle,
-        1, // ALLOW_OVERWRITE
+        allowOverwrite ? 1 : 0,
         _cancellable._handle,
         _progressCallable.nativeFunction,
         _completeCallable.nativeFunction,
@@ -284,12 +286,14 @@ class File implements Finalizable {
 
   TransferFileOperation copy({
     required File destination,
+    bool allowOverwrite = false,
     Cancellable? cancellable,
   }) {
     return TransferFileOperation._(
       source: this,
       destination: destination,
       copy: true,
+      allowOverwrite: allowOverwrite,
       cancellable: cancellable,
     );
   }
@@ -329,12 +333,14 @@ class File implements Finalizable {
 
   TransferFileOperation move({
     required File destination,
+    bool allowOverwrite = false,
     Cancellable? cancellable,
   }) {
     return TransferFileOperation._(
       source: this,
       destination: destination,
       copy: false,
+      allowOverwrite: false,
       cancellable: cancellable,
     );
   }

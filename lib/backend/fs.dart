@@ -22,15 +22,20 @@ enum OperationStatus {
 }
 
 class Cancellable extends ChangeNotifier {
-  Cancellable([VoidCallback? onCancel]) {
-    _cancelCallable = onCancel != null
-        ? NativeCallable<Void Function()>.isolateLocal(notifyListeners)
-        : null;
-    _handle = cancellable_new(_cancelCallable?.nativeFunction ?? nullptr);
+  Cancellable() {
+    _cancelCallable = NativeCallable<Void Function()>.isolateLocal(
+      notifyListeners,
+    );
+    _handle = cancellable_new();
+    _cancelCallbackHandlerId = cancellable_connect(
+      _handle,
+      _cancelCallable.nativeFunction,
+    );
   }
 
   late final Pointer<GCancellable> _handle;
-  late final NativeCallable<Void Function()>? _cancelCallable;
+  late final NativeCallable<Void Function()> _cancelCallable;
+  late final int _cancelCallbackHandlerId;
 
   bool get isCancelled => cancellable_is_cancelled(_handle);
 
@@ -39,8 +44,8 @@ class Cancellable extends ChangeNotifier {
   }
 
   void destroy() {
-    cancellable_destroy(_handle);
-    _cancelCallable?.close();
+    cancellable_destroy(_handle, _cancelCallbackHandlerId);
+    _cancelCallable.close();
   }
 }
 
@@ -359,11 +364,7 @@ extension type FileInfo._(Pointer<GFileInfo> _handle) {
     final name = fileinfo_get_name(_handle);
     if (name == nullptr) return null;
 
-    try {
-      return name.cast<Utf8>().toDartString();
-    } finally {
-      calloc.free(name);
-    }
+    return name.cast<Utf8>().toDartString();
   }
 
   int getFileType() => fileinfo_get_file_type(_handle);

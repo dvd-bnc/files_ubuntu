@@ -434,31 +434,33 @@ fn onCancel(_: [*c]c.GCancellable, user_data: ?*anyopaque) callconv(.c) void {
     callback();
 }
 
-pub export fn cancellable_new(
-    on_cancel: ?*fn () void,
-) *c.GCancellable {
-    const cancellable = c.g_cancellable_new();
-    if (on_cancel) |callback| {
-        _ = c.g_cancellable_connect(
-            cancellable,
-            c.G_CALLBACK(onCancel),
-            @ptrCast(callback),
-            null,
-        );
-    }
-    return cancellable;
+pub export fn cancellable_new() ?*c.GCancellable {
+    return c.g_cancellable_new();
 }
 
-pub export fn cancellable_cancel(cancellable: *c.GCancellable) void {
-    c.g_cancellable_cancel(cancellable);
+pub export fn cancellable_connect(
+    cancellable: *c.GCancellable,
+    on_cancel: *const fn () callconv(.c) void,
+) c.ulong {
+    return c.g_cancellable_connect(
+        cancellable,
+        c.G_CALLBACK(onCancel),
+        @ptrCast(@constCast(on_cancel)),
+        null,
+    );
 }
 
-pub export fn cancellable_is_cancelled(cancellable: *c.GCancellable) bool {
-    return c.g_cancellable_is_cancelled(cancellable) == 1;
+pub export fn cancellable_cancel(fs_cancellable: *c.GCancellable) void {
+    c.g_cancellable_cancel(fs_cancellable);
 }
 
-pub export fn cancellable_destroy(cancellable: *c.GCancellable) void {
-    c.g_object_unref(cancellable);
+pub export fn cancellable_is_cancelled(fs_cancellable: *c.GCancellable) bool {
+    return c.g_cancellable_is_cancelled(fs_cancellable) == 1;
+}
+
+pub export fn cancellable_destroy(fs_cancellable: *c.GCancellable, cancel_callback_handler_id: c.ulong) void {
+    c.g_cancellable_disconnect(fs_cancellable, cancel_callback_handler_id);
+    c.g_object_unref(fs_cancellable);
 }
 
 // -------- ERROR -------- //

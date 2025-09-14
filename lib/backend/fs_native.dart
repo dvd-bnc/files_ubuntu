@@ -33,10 +33,17 @@ final class GList extends Struct {
   external final Pointer<GList> previous;
 }
 
+@Native<Pointer<GCancellable> Function()>()
+external Pointer<GCancellable> cancellable_new();
+
 @Native<
-  Pointer<GCancellable> Function(Pointer<NativeFunction<Void Function()>>)
+  UnsignedLong Function(
+    Pointer<GCancellable>,
+    Pointer<NativeFunction<Void Function()>>,
+  )
 >()
-external Pointer<GCancellable> cancellable_new(
+external int cancellable_connect(
+  Pointer<GCancellable> cancellable,
   Pointer<NativeFunction<Void Function()>> onCancel,
 );
 
@@ -46,8 +53,11 @@ external void cancellable_cancel(Pointer<GCancellable> cancellable);
 @Native<Bool Function(Pointer<GCancellable>)>()
 external bool cancellable_is_cancelled(Pointer<GCancellable> cancellable);
 
-@Native<Void Function(Pointer<GCancellable>)>()
-external void cancellable_destroy(Pointer<GCancellable> cancellable);
+@Native<Void Function(Pointer<GCancellable>, UnsignedLong)>()
+external void cancellable_destroy(
+  Pointer<GCancellable> cancellable,
+  int cancelCallbackHandlerId,
+);
 
 @Native<Pointer<Pointer<GError>> Function()>()
 external Pointer<Pointer<GError>> error_new();

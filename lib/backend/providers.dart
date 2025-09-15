@@ -5,6 +5,7 @@ import 'package:files/backend/database/model.dart';
 import 'package:files/backend/drive_provider.dart';
 import 'package:files/backend/folder_provider.dart';
 import 'package:files/backend/stat_cache_proxy.dart';
+import 'package:isar_community/isar.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:ubuntu_service/ubuntu_service.dart';
@@ -17,21 +18,14 @@ String _isarPath(Directory dir) {
 
 Future<void> initProviders() async {
   final dir = await getApplicationDocumentsDirectory();
-  final isar = await Isar.open(
-    [EntityStatSchema],
-    directory: _isarPath(dir),
-    inspector: false,
-  );
+  final isar = await Isar.open([EntityStatSchema], directory: _isarPath(dir), inspector: false);
   final folderProvider = await FolderProvider.init();
 
   registerServiceInstance<Isar>(isar);
   registerServiceInstance<FolderProvider>(folderProvider);
   registerService<EntityStatCacheHelper>(EntityStatCacheHelper.new);
   registerService<StatCacheProxy>(StatCacheProxy.new);
-  registerService<DriveProvider>(
-    DriveProvider.new,
-    dispose: (s) => s.dispose(),
-  );
+  registerService<DriveProvider>(DriveProvider.new, dispose: (s) => s.dispose());
 }
 
 Isar get isar => getService<Isar>();

@@ -25,3 +25,6 @@ linter:
     unnecessary_parenthesis: true
     use_named_constants: true
     use_super_parameters: true
+
+formatter:
+  page_width: 100

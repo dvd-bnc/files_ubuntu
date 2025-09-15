@@ -18,15 +18,9 @@ import 'package:super_clipboard/src/format_conversions.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 import 'package:yaru/yaru.dart';
 
-typedef HeaderTapCallback = void Function(
-  bool newAscending,
-  int newColumnIndex,
-);
+typedef HeaderTapCallback = void Function(bool newAscending, int newColumnIndex);
 
-typedef HeaderResizeCallback = void Function(
-  int newColumnIndex,
-  DragUpdateDetails details,
-);
+typedef HeaderResizeCallback = void Function(int newColumnIndex, DragUpdateDetails details);
 
 class FilesTable extends StatelessWidget {
   const FilesTable({
@@ -108,16 +102,8 @@ class FilesTable extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ...columns.mapIndexed(
-              (index, column) => _buildHeaderCell(
-                column,
-                index,
-              ),
-            ),
-            Container(
-              width: rowHorizontalPadding,
-              color: Theme.of(context).colorScheme.surface,
-            ),
+            ...columns.mapIndexed((index, column) => _buildHeaderCell(column, index)),
+            Container(width: rowHorizontalPadding, color: Theme.of(context).colorScheme.surface),
           ],
         ),
       ),
@@ -132,10 +118,7 @@ class FilesTable extends StatelessWidget {
         row: row,
         columns: columns,
         horizontalPadding: rowHorizontalPadding,
-        size: Size(
-          layoutWidth + (rowHorizontalPadding * 2),
-          rowHeight,
-        ),
+        size: Size(layoutWidth + (rowHorizontalPadding * 2), rowHeight),
       ),
       data: row.entity.entity,
       dragAnchorStrategy: (draggable, context, position) {
@@ -143,14 +126,14 @@ class FilesTable extends StatelessWidget {
       },
       feedback: Material(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
         child: Icon(
           row.entity.isDirectory
               ? Utils.iconForFolder(row.entity.path)
               : Utils.iconForPath(row.entity.path),
           color: row.entity.isDirectory
               ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
           size: 64,
         ),
       ),
@@ -158,10 +141,7 @@ class FilesTable extends StatelessWidget {
         row: row,
         columns: columns,
         horizontalPadding: rowHorizontalPadding,
-        size: Size(
-          layoutWidth + (rowHorizontalPadding * 2),
-          rowHeight,
-        ),
+        size: Size(layoutWidth + (rowHorizontalPadding * 2), rowHeight),
       ),
     );
   }
@@ -183,9 +163,7 @@ class FilesTable extends StatelessWidget {
       child: Container(
         width: column.normalizedWidth + startPadding,
         constraints: BoxConstraints(minWidth: startPadding + 80),
-        padding: EdgeInsetsDirectional.only(
-          start: startPadding.toDouble(),
-        ),
+        padding: EdgeInsetsDirectional.only(start: startPadding.toDouble()),
         child: Stack(
           clipBehavior: Clip.none,
           fit: StackFit.expand,
@@ -200,16 +178,10 @@ class FilesTable extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text(
-                          column.type.formattedName,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        child: Text(column.type.formattedName, overflow: TextOverflow.ellipsis),
                       ),
                       if (columnIndex == index)
-                        Icon(
-                          ascending ? YaruIcons.go_down : YaruIcons.go_up,
-                          size: 16,
-                        ),
+                        Icon(ascending ? YaruIcons.go_down : YaruIcons.go_up, size: 16),
                     ],
                   ),
                 ),
@@ -240,11 +212,7 @@ class FilesTable extends StatelessWidget {
 }
 
 class FilesColumn {
-  const FilesColumn({
-    required this.width,
-    required this.type,
-    this.allowSorting = true,
-  });
+  const FilesColumn({required this.width, required this.type, this.allowSorting = true});
   final double width;
   final FilesColumnType type;
   final bool allowSorting;
@@ -315,21 +283,18 @@ class _FilesRowState extends State<_FilesRow> {
 
         return true;
       },
-      onAcceptWithDetails: (details) =>
-          Utils.moveFileToDest(details.data, widget.row.entity.path),
+      onAcceptWithDetails: (details) => Utils.moveFileToDest(details.data, widget.row.entity.path),
       builder: (context, candidateData, rejectedData) {
         return LayoutBuilder(
           builder: (context, constraints) {
             return Container(
-              constraints:
-                  BoxConstraints.tightForFinite(height: widget.size.height),
+              constraints: BoxConstraints.tightForFinite(height: widget.size.height),
               padding: EdgeInsetsDirectional.only(
-                end: (constraints.maxWidth - widget.size.width)
-                    .clamp(0, double.infinity),
+                end: (constraints.maxWidth - widget.size.width).clamp(0, double.infinity),
               ),
               child: Material(
                 color: widget.row.selected
-                    ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+                    ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)
                     : Colors.transparent,
                 clipBehavior: Clip.antiAlias,
                 child: TimedInkwell(
@@ -358,9 +323,7 @@ class _FilesRowState extends State<_FilesRow> {
                       print("Wrote"); */
                     },
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: widget.horizontalPadding,
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding),
                       child: Row(
                         children: widget.columns
                             .map((e) => _buildCell(widget.row.entity, e))
@@ -388,16 +351,11 @@ class _FilesRowState extends State<_FilesRow> {
               entity.isDirectory
                   ? Utils.iconForFolder(entity.path)
                   : Utils.iconForPath(entity.path),
-              color: entity.isDirectory
-                  ? Theme.of(context).colorScheme.primary
-                  : null,
+              color: entity.isDirectory ? Theme.of(context).colorScheme.primary : null,
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(
-                Utils.getEntityName(entity.path),
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: Text(Utils.getEntityName(entity.path), overflow: TextOverflow.ellipsis),
             ),
           ],
         );
@@ -407,14 +365,9 @@ class _FilesRowState extends State<_FilesRow> {
           overflow: TextOverflow.ellipsis,
         );
       case FilesColumnType.type:
-        final fileExtension =
-            p.extension(entity.path).replaceAll('.', '').toUpperCase();
-        final fileLabel =
-            fileExtension.isNotEmpty ? 'File ($fileExtension)' : 'File';
-        child = Text(
-          entity.isDirectory ? 'Directory' : fileLabel,
-          overflow: TextOverflow.ellipsis,
-        );
+        final fileExtension = p.extension(entity.path).replaceAll('.', '').toUpperCase();
+        final fileLabel = fileExtension.isNotEmpty ? 'File ($fileExtension)' : 'File';
+        child = Text(entity.isDirectory ? 'Directory' : fileLabel, overflow: TextOverflow.ellipsis);
       case FilesColumnType.size:
         child = Text(
           entity.isDirectory ? '' : filesize(entity.stat.size),

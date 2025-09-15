@@ -40,8 +40,7 @@ class FilesGrid extends StatefulWidget {
 
 class _FilesGridState extends State<FilesGrid> {
   final ScrollController _internalScrollController = ScrollController();
-  ScrollController get scrollController =>
-      widget.controller ?? _internalScrollController;
+  ScrollController get scrollController => widget.controller ?? _internalScrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -66,19 +65,15 @@ class _FilesGridState extends State<FilesGrid> {
 
             return Draggable<FileSystemEntity>(
               data: entityInfo.entity,
-              dragAnchorStrategy: (_, __, ___) => const Offset(32, 32),
+              dragAnchorStrategy: (_, _, _) => const Offset(32, 32),
               feedback: Material(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
                 child: Icon(
                   entityInfo.isDirectory
                       ? Utils.iconForFolder(entityInfo.path)
                       : Utils.iconForPath(entityInfo.path),
-                  color: entityInfo.isDirectory
-                      ? Theme.of(context).colorScheme.primary
-                      : null,
+                  color: entityInfo.isDirectory ? Theme.of(context).colorScheme.primary : null,
                   size: 64,
                 ),
               ),
@@ -129,13 +124,11 @@ class FileCell extends StatelessWidget {
         return true;
       },
       onAcceptWithDetails: (_) => onDropAccept?.call(entity.path),
-      builder: (context, _, __) => Material(
+      builder: (context, _, _) => Material(
         clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         color: selected
-            ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)
             : Colors.transparent,
         child: TimedInkwell(
           onTap: () => onTap?.call(entity),
@@ -155,9 +148,7 @@ class FileCell extends StatelessWidget {
                 icon: entity.isDirectory
                     ? Utils.iconForFolder(entity.path)
                     : Utils.iconForPath(entity.path),
-                iconColor: entity.isDirectory
-                    ? Theme.of(context).colorScheme.primary
-                    : null,
+                iconColor: entity.isDirectory ? Theme.of(context).colorScheme.primary : null,
               ),
             ),
           ),
@@ -168,12 +159,7 @@ class FileCell extends StatelessWidget {
 }
 
 class Cell extends StatelessWidget {
-  const Cell({
-    required this.name,
-    required this.icon,
-    this.iconColor,
-    super.key,
-  });
+  const Cell({required this.name, required this.icon, this.iconColor, super.key});
   final String name;
   final IconData icon;
   final Color? iconColor;
@@ -185,12 +171,7 @@ class Cell extends StatelessWidget {
       children: [
         const SizedBox(height: 8),
         Expanded(
-          child: _ConstrainedIcon(
-            child: Icon(
-              icon,
-              color: iconColor,
-            ),
-          ),
+          child: _ConstrainedIcon(child: Icon(icon, color: iconColor)),
         ),
         const SizedBox(height: 8),
         DefaultTextStyle(
@@ -215,9 +196,7 @@ class _ConstrainedIcon extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return IconTheme(
-          data: Theme.of(context)
-              .iconTheme
-              .copyWith(size: constraints.biggest.shortestSide),
+          data: Theme.of(context).iconTheme.copyWith(size: constraints.biggest.shortestSide),
           child: child,
         );
       },

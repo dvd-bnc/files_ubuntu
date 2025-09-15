@@ -20,10 +20,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:yaru/yaru.dart';
 
 class FilesWorkspace extends StatefulWidget {
-  const FilesWorkspace({
-    required this.controller,
-    super.key,
-  });
+  const FilesWorkspace({required this.controller, super.key});
   final WorkspaceController controller;
 
   @override
@@ -54,10 +51,8 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
 
   @override
   void dispose() {
-    controller.lastHorizontalScrollOffset =
-        horizontalController.lastPosition?.pixels ?? 0;
-    controller.lastVerticalScrollOffset =
-        verticalController.lastPosition?.pixels ?? 0;
+    controller.lastHorizontalScrollOffset = horizontalController.lastPosition?.pixels ?? 0;
+    controller.lastVerticalScrollOffset = verticalController.lastPosition?.pixels ?? 0;
     controller.removeListener(_onControllerUpdate);
     super.dispose();
   }
@@ -103,10 +98,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
   }
 
   Future<String?> promptNewFolder() {
-    return showDialog(
-      context: context,
-      builder: (context) => const FolderDialog(),
-    );
+    return showDialog(context: context, builder: (context) => const FolderDialog());
   }
 
   String get selectedItemsLabel {
@@ -139,12 +131,9 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
         // TODO: remove ignore
         // ignore: deprecated_member_use
         RawKeyboard.instance.keysPressed;
-    final multiSelect = keysPressed.contains(
-          LogicalKeyboardKey.controlLeft,
-        ) ||
-        keysPressed.contains(
-          LogicalKeyboardKey.controlRight,
-        );
+    final multiSelect =
+        keysPressed.contains(LogicalKeyboardKey.controlLeft) ||
+        keysPressed.contains(LogicalKeyboardKey.controlRight);
 
     if (!multiSelect) controller.clearSelectedItems();
 
@@ -181,10 +170,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
         onChanged: (val) => _setHidden(val!),
         child: const Text('Show hidden files'),
       ),
-      ContextMenuItem(
-        child: const Text('Create new folder'),
-        onTap: _createFolder,
-      ),
+      ContextMenuItem(child: const Text('Create new folder'), onTap: _createFolder),
       const ContextMenuDivider(),
       RadioMenuItem(
         child: const Text('Name'),
@@ -255,10 +241,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
             value: controller,
             child: controller.lastError == null
                 ? getBody(context)
-                : _WorkspaceErrorWidget(
-                    error: controller.lastError!,
-                    path: controller.currentDir,
-                  ),
+                : _WorkspaceErrorWidget(error: controller.lastError!, path: controller.currentDir),
           ),
         ),
         SizedBox(
@@ -283,9 +266,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
 
   Widget getBody(BuildContext context) {
     if (controller.currentInfo == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (controller.currentInfo!.isEmpty) {
@@ -293,14 +274,8 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              YaruIcons.folder,
-              size: 80,
-            ),
-            Text(
-              'This Folder is Empty',
-              style: TextStyle(fontSize: 17),
-            ),
+            Icon(YaruIcons.folder, size: 80),
+            Text('This Folder is Empty', style: TextStyle(fontSize: 17)),
           ],
         ),
       );
@@ -315,8 +290,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
           onDropAccept: _onDropAccepted,
           controller: verticalController,
           size: controller.gridState.size,
-          onSizeChange: (value) =>
-              controller.setGridState(GridViewState(size: value)),
+          onSizeChange: (value) => controller.setGridState(GridViewState(size: value)),
         );
       default:
         return FilesTable(
@@ -331,23 +305,14 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
               )
               .toList(),
           columns: [
-            FilesColumn(
-              width: controller.tableState.widths[0],
-              type: FilesColumnType.name,
-            ),
-            FilesColumn(
-              width: controller.tableState.widths[1],
-              type: FilesColumnType.date,
-            ),
+            FilesColumn(width: controller.tableState.widths[0], type: FilesColumnType.name),
+            FilesColumn(width: controller.tableState.widths[1], type: FilesColumnType.date),
             FilesColumn(
               width: controller.tableState.widths[2],
               type: FilesColumnType.type,
               allowSorting: false,
             ),
-            FilesColumn(
-              width: controller.tableState.widths[3],
-              type: FilesColumnType.size,
-            ),
+            FilesColumn(width: controller.tableState.widths[3], type: FilesColumnType.size),
           ],
           ascending: controller.ascending,
           columnIndex: controller.sortType.index,
@@ -362,10 +327,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
           },
           onHeaderResize: (newColumnIndex, details) {
             controller.setTableState(
-              controller.tableState.applyDeltaToWidth(
-                newColumnIndex,
-                details.primaryDelta!,
-              ),
+              controller.tableState.applyDeltaToWidth(newColumnIndex, details.primaryDelta!),
             );
           },
           horizontalController: horizontalController,
@@ -420,9 +382,7 @@ class _WorkspaceTopbar extends StatelessWidget {
         YaruOptionButton(
           onPressed: () {
             final backDir = PathParts.parse(controller.currentDir);
-            controller.changeCurrentDir(
-              backDir.toPath(backDir.parts.length - 1),
-            );
+            controller.changeCurrentDir(backDir.toPath(backDir.parts.length - 1));
           },
           child: const Icon(YaruIcons.go_up, size: 20),
         ),
@@ -442,9 +402,7 @@ class _WorkspaceTopbar extends StatelessWidget {
         if (popupBuilder != null) const SizedBox(width: 8),
         if (popupBuilder != null)
           MenuAnchor(
-            menuChildren: popupBuilder!(context)
-                .map((e) => e.buildWrapper(context))
-                .toList(),
+            menuChildren: popupBuilder!(context).map((e) => e.buildWrapper(context)).toList(),
             alignmentOffset: const Offset(-8, 8),
             builder: (context, controller, child) {
               return YaruOptionButton(
@@ -466,7 +424,6 @@ class _WorkspaceTopbar extends StatelessWidget {
       case WorkspaceView.grid:
         return YaruIcons.app_grid;
       case WorkspaceView.table:
-      default:
         return YaruIcons.unordered_list;
     }
   }
@@ -534,10 +491,7 @@ class _HistoryModifierIconButton extends StatelessWidget {
 }
 
 class _WorkspaceErrorWidget extends StatelessWidget {
-  const _WorkspaceErrorWidget({
-    required this.error,
-    required this.path,
-  });
+  const _WorkspaceErrorWidget({required this.error, required this.path});
   final OSError error;
   final String path;
 
@@ -547,11 +501,7 @@ class _WorkspaceErrorWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Theme.of(context).colorScheme.primary,
-          ),
+          Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.primary),
           const SizedBox(height: 16),
           Text.rich(
             TextSpan(
@@ -563,9 +513,7 @@ class _WorkspaceErrorWidget extends StatelessWidget {
                 ),
                 TextSpan(
                   text: '\n${error.message}',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  style: TextStyle(color: Theme.of(context).colorScheme.primary),
                 ),
               ],
             ),

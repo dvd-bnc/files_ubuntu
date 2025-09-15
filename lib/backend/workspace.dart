@@ -145,10 +145,7 @@ class WorkspaceController with ChangeNotifier {
 
   OSError? get lastError => _lastError;
 
-  Future<void> changeCurrentDir(
-    String newDir, {
-    bool updateHistory = true,
-  }) async {
+  Future<void> changeCurrentDir(String newDir, {bool updateHistory = true}) async {
     _currentDir = newDir;
 
     if (updateHistory) {
@@ -165,8 +162,7 @@ class WorkspaceController with ChangeNotifier {
     clearSelectedItems();
     await _directoryStream?.cancel();
     await getInfoForDir(Directory(newDir));
-    _directoryStream =
-        Directory(newDir).watch().listen(_directoryStreamListener);
+    _directoryStream = Directory(newDir).watch().listen(_directoryStreamListener);
   }
 
   void setHistoryOffset(int offset) {
@@ -205,12 +201,7 @@ class TableViewState {
   final double thirdWidth;
   final double fourthWidth;
 
-  List<double> get widths => [
-        firstWidth,
-        secondWidth,
-        thirdWidth,
-        fourthWidth,
-      ];
+  List<double> get widths => [firstWidth, secondWidth, thirdWidth, fourthWidth];
 
   TableViewState copyWith({
     double? firstWidth,
@@ -243,8 +234,6 @@ class TableViewState {
 }
 
 class GridViewState {
-  const GridViewState({
-    required this.size,
-  });
+  const GridViewState({required this.size});
   final double size;
 }

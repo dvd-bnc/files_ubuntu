@@ -2,9 +2,7 @@ import 'dart:io';
 
 import 'package:files/backend/providers.dart';
 import 'package:flutter/foundation.dart';
-import 'package:isar/isar.dart';
-
-export 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 part 'model.g.dart';
 
@@ -23,15 +21,15 @@ class EntityStat with ChangeNotifier {
   });
 
   EntityStat.fromStat(String path, FileStat stat)
-      : this.fastInit(
-          path: path,
-          changed: stat.changed,
-          modified: stat.modified,
-          accessed: stat.accessed,
-          type: EntityType.fromDartIo(stat.type),
-          mode: stat.mode,
-          size: stat.size,
-        );
+    : this.fastInit(
+        path: path,
+        changed: stat.changed,
+        modified: stat.modified,
+        accessed: stat.accessed,
+        type: EntityType.fromDartIo(stat.type),
+        mode: stat.mode,
+        size: stat.size,
+      );
   Id? id;
 
   @Index(unique: true, type: IndexType.hash)

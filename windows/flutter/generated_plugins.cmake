@@ -4,7 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   irondash_engine_context
-  isar_flutter_libs
+  isar_community_flutter_libs
   pasteboard
   screen_retriever_windows
   super_native_extensions

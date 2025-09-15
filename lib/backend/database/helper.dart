@@ -2,22 +2,19 @@ import 'dart:io';
 
 import 'package:files/backend/database/model.dart';
 import 'package:files/backend/providers.dart';
+import 'package:isar_community/isar.dart';
 
 class EntityStatCacheHelper {
   Future<EntityStat> get(String path) async {
     final stat = isar.entityStats.where().pathEqualTo(path).findFirstSync();
 
     if (stat == null) {
-      final fetchedStat = EntityStat.fromStat(
-        path,
-        await FileStat.stat(path),
-      );
+      final fetchedStat = EntityStat.fromStat(path, await FileStat.stat(path));
       await set(fetchedStat);
       return fetchedStat;
     }
     return stat;
   }
 
-  Future<void> set(EntityStat entity) =>
-      isar.writeTxn(() => isar.entityStats.put(entity));
+  Future<void> set(EntityStat entity) => isar.writeTxn(() => isar.entityStats.put(entity));
 }

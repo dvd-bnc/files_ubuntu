@@ -34,8 +34,7 @@ class CancelableFsFetch {
     if (cancelled) throw CancelledException();
 
     final enumeratorOp = source.getEnumerator(
-      attributes:
-          'standard::name,standard::type,standard::size,standard::is-hidden,time::*',
+      attributes: 'standard::name,standard::type,standard::size,standard::is-hidden,time::*',
     );
     final enumerator = await enumeratorOp.result;
 

@@ -27,11 +27,8 @@ class EntityContextMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return CallbackShortcuts(
       bindings: {
-        if (onCopy != null)
-          const SingleActivator(LogicalKeyboardKey.keyC, control: true):
-              onCopy!,
-        if (onTrash != null)
-          const SingleActivator(LogicalKeyboardKey.delete): onTrash!,
+        if (onCopy != null) const SingleActivator(LogicalKeyboardKey.keyC, control: true): onCopy!,
+        if (onTrash != null) const SingleActivator(LogicalKeyboardKey.delete): onTrash!,
       },
       child: ContextMenu(
         entries: [

@@ -160,8 +160,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
   // To move more than one file
   void _onDropAccepted(String path) async {
     final futures = [
-      for (final entity in controller.selectedItems)
-        Utils.moveFileToDest(entity.file, path).result,
+      for (final entity in controller.selectedItems) Utils.moveFileToDest(entity.file, path).result,
     ];
     await futures.wait;
   }
@@ -216,9 +215,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
       ContextMenuItem(
         child: const Text('Reload'),
         onTap: () async {
-          await controller.getInfoForDir(
-            fs.File.fromPath(controller.currentDir),
-          );
+          await controller.getInfoForDir(fs.File.fromPath(controller.currentDir));
         },
       ),
     ];

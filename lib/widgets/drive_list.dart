@@ -30,7 +30,7 @@ class DriveList extends StatelessWidget {
               )
               .where((e) => !e.hintIgnore && e.filesystem != null)
               .where((e) => driveProvider.supportedFilesystems.contains(e.idType))
-              .map((e) => _DriveTile(blockDevice: e, onTap: onDriveTap))
+              .map((e) => _DriveTile(blockDevice: e, workspace: workspace))
               .toList(),
         );
       },
@@ -39,10 +39,7 @@ class DriveList extends StatelessWidget {
 }
 
 class _DriveTile extends StatefulWidget {
-  const _DriveTile({
-    required this.blockDevice,
-    required this.workspace,
-  });
+  const _DriveTile({required this.blockDevice, required this.workspace});
 
   final UDisksBlockDevice blockDevice;
   final WorkspaceController workspace;
@@ -109,9 +106,7 @@ class _DriveTileState extends State<_DriveTile> {
                   await widget.blockDevice.filesystem!.unmount();
                   if (p.isWithin(mountPoint!, widget.workspace.currentDir) ||
                       p.equals(mountPoint!, widget.workspace.currentDir)) {
-                    await widget.workspace.changeCurrentDir(
-                      folderProvider.destinations.first.path,
-                    );
+                    await widget.workspace.changeCurrentDir(folderProvider.destinations.first.path);
                   }
 
                   setState(() {});

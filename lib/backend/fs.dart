@@ -12,25 +12,13 @@ void initFileSystemThread() {
   init_io_thread();
 }
 
-enum OperationStatus {
-  pending,
-  running,
-  cancellationPending,
-  cancelled,
-  error,
-  complete,
-}
+enum OperationStatus { pending, running, cancellationPending, cancelled, error, complete }
 
 class Cancellable extends ChangeNotifier {
   Cancellable() {
-    _cancelCallable = NativeCallable<Void Function()>.isolateLocal(
-      notifyListeners,
-    );
+    _cancelCallable = NativeCallable<Void Function()>.isolateLocal(notifyListeners);
     _handle = cancellable_new();
-    _cancelCallbackHandlerId = cancellable_connect(
-      _handle,
-      _cancelCallable.nativeFunction,
-    );
+    _cancelCallbackHandlerId = cancellable_connect(_handle, _cancelCallable.nativeFunction);
   }
 
   late final Pointer<GCancellable> _handle;
@@ -60,9 +48,7 @@ abstract class BaseFileSystemOperation<Res> {
     _start();
   }
 
-  final ValueNotifier<OperationStatus> _status = ValueNotifier(
-    OperationStatus.pending,
-  );
+  final ValueNotifier<OperationStatus> _status = ValueNotifier(OperationStatus.pending);
   final Completer<Res> _completer = Completer();
   late final Cancellable _cancellable;
   late final bool _implicitCancellable;
@@ -82,11 +68,7 @@ abstract class BaseFileSystemOperation<Res> {
     final domain = error_domain_name(_error.value).cast<Utf8>().toDartString();
     final message = _error.value.ref.message.cast<Utf8>().toDartString();
 
-    return NativeException._(
-      domain: domain,
-      code: _error.value.ref.code,
-      message: message,
-    );
+    return NativeException._(domain: domain, code: _error.value.ref.code, message: message);
   }
 
   void _create() {
@@ -128,8 +110,7 @@ abstract class BaseFileSystemOperation<Res> {
   }
 }
 
-typedef _CallableCreateCallback<T> =
-    NativeCallable Function(void Function(T) onComplete);
+typedef _CallableCreateCallback<T> = NativeCallable Function(void Function(T) onComplete);
 typedef _StartOperationCallback =
     void Function(
       Pointer<GCancellable> cancellable,
@@ -155,11 +136,7 @@ class FileSystemOperation<Res> extends BaseFileSystemOperation<Res> {
 
   @override
   void _start() {
-    _onStartOperation(
-      _cancellable._handle,
-      _completeCallable.nativeFunction,
-      _error,
-    );
+    _onStartOperation(_cancellable._handle, _completeCallable.nativeFunction, _error);
   }
 
   @override
@@ -223,12 +200,8 @@ class TransferFileOperation extends BaseFileSystemOperation<bool> {
   @override
   void _create() {
     super._create();
-    _progressCallable = NativeCallable<Void Function(Long, Long)>.listener(
-      _onProgress,
-    );
-    _completeCallable = NativeCallable<Void Function(Bool)>.listener(
-      _onComplete,
-    );
+    _progressCallable = NativeCallable<Void Function(Long, Long)>.listener(_onProgress);
+    _completeCallable = NativeCallable<Void Function(Bool)>.listener(_onComplete);
   }
 
   @override
@@ -318,15 +291,14 @@ class File implements Finalizable {
           NativeCallable<Void Function(Pointer<GFileEnumerator>)>.listener(
             (Pointer<GFileEnumerator> v) => onComplete(FileEnumerator._(v)),
           ),
-      onStartOperation: (cancellable, onComplete, error) =>
-          file_enumerate_children(
-            _handle,
-            attributes.toNativeUtf8().cast(),
-            0,
-            cancellable,
-            onComplete.cast(),
-            error,
-          ),
+      onStartOperation: (cancellable, onComplete, error) => file_enumerate_children(
+        _handle,
+        attributes.toNativeUtf8().cast(),
+        0,
+        cancellable,
+        onComplete.cast(),
+        error,
+      ),
       cancellable: cancellable,
     );
   }
@@ -345,10 +317,7 @@ class File implements Finalizable {
     );
   }
 
-  FileSystemOperation<FileInfo> queryInfo({
-    String attributes = '*',
-    Cancellable? cancellable,
-  }) {
+  FileSystemOperation<FileInfo> queryInfo({String attributes = '*', Cancellable? cancellable}) {
     return FileSystemOperation<FileInfo>._(
       target: _handle.cast(),
       onCreateCompleteCallable: (onComplete) =>
@@ -436,10 +405,7 @@ class FileInfo implements Finalizable {
 
   List<String>? listAttributes({String? namespace}) {
     final namespacePtr = namespace?.toNativeUtf8();
-    final attributes = fileinfo_list_attributes(
-      _handle,
-      namespacePtr?.cast() ?? nullptr,
-    );
+    final attributes = fileinfo_list_attributes(_handle, namespacePtr?.cast() ?? nullptr);
 
     if (namespacePtr != null) calloc.free(namespacePtr);
     if (attributes == nullptr) return null;
@@ -472,24 +438,15 @@ extension type FileList._(Pointer<GList> _handle) {
 }
 
 extension type FileEnumerator._(Pointer<GFileEnumerator> _handle) {
-  FileSystemOperation<FileList?> enumerate({
-    int fileAmount = 4,
-    Cancellable? cancellable,
-  }) {
+  FileSystemOperation<FileList?> enumerate({int fileAmount = 4, Cancellable? cancellable}) {
     return FileSystemOperation<FileList?>._(
       target: _handle.cast(),
       onCreateCompleteCallable: (onComplete) =>
           NativeCallable<Void Function(Pointer<GList>)>.listener(
-            (Pointer<GList> v) =>
-                onComplete(v != nullptr ? FileList._(v) : null),
+            (Pointer<GList> v) => onComplete(v != nullptr ? FileList._(v) : null),
           ),
-      onStartOperation: (cancellable, onComplete, error) => fileenum_next_files(
-        _handle,
-        fileAmount,
-        cancellable,
-        onComplete.cast(),
-        error,
-      ),
+      onStartOperation: (cancellable, onComplete, error) =>
+          fileenum_next_files(_handle, fileAmount, cancellable, onComplete.cast(), error),
       cancellable: cancellable,
     );
   }
@@ -517,11 +474,7 @@ class NativeException implements Exception {
   final int code;
   final String message;
 
-  const NativeException._({
-    required this.domain,
-    required this.code,
-    required this.message,
-  });
+  const NativeException._({required this.domain, required this.code, required this.message});
 
   @override
   String toString() {

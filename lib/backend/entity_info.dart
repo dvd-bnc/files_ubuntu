@@ -61,8 +61,7 @@ class EntityInfo {
 }
 
 extension EntityInfoHelpers on EntityInfo {
-  bool get isFile =>
-      stat.type == EntityType.file || stat.type == EntityType.link;
+  bool get isFile => stat.type == EntityType.file || stat.type == EntityType.link;
   bool get isDirectory => stat.type == EntityType.directory;
 }
 

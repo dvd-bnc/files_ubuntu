@@ -39,12 +39,7 @@ external void obj_unref(Pointer<Void> obj);
 @Native<Pointer<GCancellable> Function()>()
 external Pointer<GCancellable> cancellable_new();
 
-@Native<
-  UnsignedLong Function(
-    Pointer<GCancellable>,
-    Pointer<NativeFunction<Void Function()>>,
-  )
->()
+@Native<UnsignedLong Function(Pointer<GCancellable>, Pointer<NativeFunction<Void Function()>>)>()
 external int cancellable_connect(
   Pointer<GCancellable> cancellable,
   Pointer<NativeFunction<Void Function()>> onCancel,
@@ -57,10 +52,7 @@ external void cancellable_cancel(Pointer<GCancellable> cancellable);
 external bool cancellable_is_cancelled(Pointer<GCancellable> cancellable);
 
 @Native<Void Function(Pointer<GCancellable>, UnsignedLong)>()
-external void cancellable_destroy(
-  Pointer<GCancellable> cancellable,
-  int cancelCallbackHandlerId,
-);
+external void cancellable_destroy(Pointer<GCancellable> cancellable, int cancelCallbackHandlerId);
 
 @Native<Pointer<Pointer<GError>> Function()>()
 external Pointer<Pointer<GError>> error_new();
@@ -221,8 +213,7 @@ external void file_enumerate_children(
   Pointer<Char> attributes,
   int flags,
   Pointer<GCancellable> cancellable,
-  Pointer<NativeFunction<Void Function(Pointer<GFileEnumerator>)>>
-  resultCallback,
+  Pointer<NativeFunction<Void Function(Pointer<GFileEnumerator>)>> resultCallback,
   Pointer<Pointer<GError>> error,
 );
 

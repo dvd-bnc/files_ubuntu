@@ -51,13 +51,15 @@ class FolderProvider {
 
       final backDir = getUserDirectory(dirNames.first)!.path.split(Platform.pathSeparator)
         ..removeLast();
-      folders.add(BuiltinFolder(FolderType.home, Directory(backDir.join(Platform.pathSeparator))));
+      folders.add(
+        BuiltinFolder(FolderType.home, fs.File.fromPath(backDir.join(Platform.pathSeparator))),
+      );
 
       for (final element in dirNames) {
         final type = FolderType.fromString(element);
         if (type == null) continue;
 
-        folders.add(BuiltinFolder(type, Directory(getUserDirectory(element)!.path)));
+        folders.add(BuiltinFolder(type, fs.File.fromPath(getUserDirectory(element)!.path)));
       }
     } else {
       throw Exception('Platform not supported');

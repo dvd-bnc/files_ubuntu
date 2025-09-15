@@ -9,10 +9,7 @@ class EntityStatCacheHelper {
 
     if (stat == null) {
       final file = fs.File.fromPath(path);
-      final fetchedStat = EntityStat.fromFileInfo(
-        path,
-        await file.queryInfo().result,
-      );
+      final fetchedStat = EntityStat.fromFileInfo(path, await file.queryInfo().result);
       await set(fetchedStat);
       return fetchedStat;
     }

@@ -20,10 +20,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:yaru/yaru.dart';
 
 class FilesWorkspace extends StatefulWidget {
-  const FilesWorkspace({
-    required this.controller,
-    super.key,
-  });
+  const FilesWorkspace({required this.controller, super.key});
   final WorkspaceController controller;
 
   @override
@@ -139,12 +136,9 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
         // TODO: remove ignore
         // ignore: deprecated_member_use
         RawKeyboard.instance.keysPressed;
-    final multiSelect = keysPressed.contains(
-          LogicalKeyboardKey.controlLeft,
-        ) ||
-        keysPressed.contains(
-          LogicalKeyboardKey.controlRight,
-        );
+    final multiSelect =
+        keysPressed.contains(LogicalKeyboardKey.controlLeft) ||
+        keysPressed.contains(LogicalKeyboardKey.controlRight);
 
     if (!multiSelect) controller.clearSelectedItems();
 
@@ -283,9 +277,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
 
   Widget getBody(BuildContext context) {
     if (controller.currentInfo == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (controller.currentInfo!.isEmpty) {
@@ -293,14 +285,8 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              YaruIcons.folder,
-              size: 80,
-            ),
-            Text(
-              'This Folder is Empty',
-              style: TextStyle(fontSize: 17),
-            ),
+            Icon(YaruIcons.folder, size: 80),
+            Text('This Folder is Empty', style: TextStyle(fontSize: 17)),
           ],
         ),
       );
@@ -442,9 +428,9 @@ class _WorkspaceTopbar extends StatelessWidget {
         if (popupBuilder != null) const SizedBox(width: 8),
         if (popupBuilder != null)
           MenuAnchor(
-            menuChildren: popupBuilder!(context)
-                .map((e) => e.buildWrapper(context))
-                .toList(),
+            menuChildren: popupBuilder!(
+              context,
+            ).map((e) => e.buildWrapper(context)).toList(),
             alignmentOffset: const Offset(-8, 8),
             builder: (context, controller, child) {
               return YaruOptionButton(
@@ -466,7 +452,6 @@ class _WorkspaceTopbar extends StatelessWidget {
       case WorkspaceView.grid:
         return YaruIcons.app_grid;
       case WorkspaceView.table:
-      default:
         return YaruIcons.unordered_list;
     }
   }
@@ -534,10 +519,7 @@ class _HistoryModifierIconButton extends StatelessWidget {
 }
 
 class _WorkspaceErrorWidget extends StatelessWidget {
-  const _WorkspaceErrorWidget({
-    required this.error,
-    required this.path,
-  });
+  const _WorkspaceErrorWidget({required this.error, required this.path});
   final OSError error;
   final String path;
 

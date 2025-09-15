@@ -28,8 +28,7 @@ class _ContextMenuState extends State<ContextMenu> {
       menuChildren: widget.entries.map((e) => e.buildWrapper(context)).toList(),
       builder: (context, controller, child) {
         return GestureDetector(
-          onSecondaryTapUp: (details) =>
-              controller.open(position: details.localPosition),
+          onSecondaryTapUp: (details) => controller.open(position: details.localPosition),
           onLongPressDown: (details) => lastPosition = details.localPosition,
           onLongPress: () => controller.open(position: lastPosition),
           child: child,
@@ -41,10 +40,7 @@ class _ContextMenuState extends State<ContextMenu> {
 }
 
 class _EnabledBuilder extends StatelessWidget {
-  const _EnabledBuilder({
-    required this.enabled,
-    required this.child,
-  });
+  const _EnabledBuilder({required this.enabled, required this.child});
   final bool enabled;
   final Widget child;
 
@@ -52,10 +48,7 @@ class _EnabledBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return IgnorePointer(
       ignoring: !enabled,
-      child: Opacity(
-        opacity: enabled ? 1 : 0.4,
-        child: child,
-      ),
+      child: Opacity(opacity: enabled ? 1 : 0.4, child: child),
     );
   }
 }
@@ -101,9 +94,7 @@ class SubmenuMenuItem extends BaseContextMenuItem {
       leadingIcon: buildLeading(context),
       trailingIcon: buildTrailing(context),
       style: const ButtonStyle(
-        padding: WidgetStatePropertyAll(
-          EdgeInsets.symmetric(horizontal: 16),
-        ),
+        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 16)),
       ),
       child: child,
     );
@@ -128,18 +119,13 @@ class ContextMenuItem extends BaseContextMenuItem {
 
     return MenuItemButton(
       leadingIcon: leading != null
-          ? IconTheme.merge(
-              data: Theme.of(context).iconTheme.copyWith(size: 20),
-              child: leading,
-            )
+          ? IconTheme.merge(data: Theme.of(context).iconTheme.copyWith(size: 20), child: leading)
           : null,
       trailingIcon: buildTrailing(context),
       onPressed: onTap,
       shortcut: shortcut,
       style: const ButtonStyle(
-        padding: WidgetStatePropertyAll(
-          EdgeInsets.symmetric(horizontal: 16),
-        ),
+        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 16)),
       ),
       child: child,
     );
@@ -220,11 +206,7 @@ class CheckboxMenuItem extends ContextMenuItem {
   Widget? buildTrailing(BuildContext context) {
     return ExcludeFocus(
       child: IgnorePointer(
-        child: YaruCheckbox(
-          value: value,
-          onChanged: onChanged,
-          tristate: tristate,
-        ),
+        child: YaruCheckbox(value: value, onChanged: onChanged, tristate: tristate),
       ),
     );
   }

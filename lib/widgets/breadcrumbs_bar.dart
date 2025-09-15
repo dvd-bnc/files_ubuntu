@@ -36,10 +36,7 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
     _updateText();
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
-        controller.selection = TextSelection(
-          baseOffset: 0,
-          extentOffset: controller.text.length,
-        );
+        controller.selection = TextSelection(baseOffset: 0, extentOffset: controller.text.length);
       }
     });
   }
@@ -72,15 +69,11 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Material(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                       side: !focusNode.hasFocus
-                          ? BorderSide(
-                              color: Theme.of(context).colorScheme.outline,
-                            )
+                          ? BorderSide(color: Theme.of(context).colorScheme.outline)
                           : BorderSide.none,
                     ),
                     clipBehavior: Clip.antiAlias,
@@ -124,9 +117,7 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
 
       // We need home folder on last position here to emulate a low priority entry
       final sortedFolders = folderProvider.folders;
-      final homeIndex = sortedFolders.indexWhere(
-        (e) => e.type == FolderType.home,
-      );
+      final homeIndex = sortedFolders.indexWhere((e) => e.type == FolderType.home);
       sortedFolders.add(sortedFolders.removeAt(homeIndex));
 
       final builtinFolder = sortedFolders.firstWhereOrNull(
@@ -138,10 +129,8 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
         actualParts = [
           builtinParts,
           ...List.generate(
-            widget.path.integralParts.length -
-                builtinParts.integralParts.length,
-            (index) =>
-                widget.path.trim(index + builtinParts.integralParts.length),
+            widget.path.integralParts.length - builtinParts.integralParts.length,
+            (index) => widget.path.trim(index + builtinParts.integralParts.length),
           ),
         ];
       } else {
@@ -155,8 +144,7 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final isInsideBuiltin =
-              builtinFolder != null &&
-              actualParts[index].toPath() == builtinFolder.directory.path;
+              builtinFolder != null && actualParts[index].toPath() == builtinFolder.directory.path;
 
           return _BreadcrumbChip(
             path: actualParts[index],
@@ -164,10 +152,7 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
             childOverride: isInsideBuiltin
                 ? Row(
                     children: [
-                      Icon(
-                        folderProvider.getIconForType(builtinFolder.type),
-                        size: 16,
-                      ),
+                      Icon(folderProvider.getIconForType(builtinFolder.type), size: 16),
                       const SizedBox(width: 8),
                       Text(Utils.getEntityName(builtinFolder.directory.path)),
                     ],
@@ -193,8 +178,7 @@ class _BreadcrumbChip extends StatelessWidget {
     return SizedBox(
       height: double.infinity,
       child: DragTarget<fs.File>(
-        onAcceptWithDetails: (details) =>
-            Utils.moveFileToDest(details.data, path.toPath()),
+        onAcceptWithDetails: (details) => Utils.moveFileToDest(details.data, path.toPath()),
         builder: (context, candidateData, rejectedData) {
           return InkWell(
             child: Row(

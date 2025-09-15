@@ -137,10 +137,7 @@ class WorkspaceController with ChangeNotifier {
 
   OSError? get lastError => _lastError;
 
-  Future<void> changeCurrentDir(
-    String newDir, {
-    bool updateHistory = true,
-  }) async {
+  Future<void> changeCurrentDir(String newDir, {bool updateHistory = true}) async {
     _currentDir = newDir;
 
     if (updateHistory) {
@@ -157,9 +154,7 @@ class WorkspaceController with ChangeNotifier {
     clearSelectedItems();
     await _directoryStream?.cancel();
     await getInfoForDir(fs.File.fromPath(newDir));
-    _directoryStream = Directory(
-      newDir,
-    ).watch().listen(_directoryStreamListener);
+    _directoryStream = Directory(newDir).watch().listen(_directoryStreamListener);
   }
 
   void setHistoryOffset(int offset) {

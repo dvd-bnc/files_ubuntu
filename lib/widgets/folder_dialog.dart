@@ -35,8 +35,7 @@ class _FolderDialogState extends State<FolderDialog> {
         ValueListenableBuilder<TextEditingValue>(
           valueListenable: controller,
           builder: (context, value, _) => TextButton(
-            onPressed:
-                value.text.isNotEmpty && folderValidator.hasMatch(value.text)
+            onPressed: value.text.isNotEmpty && folderValidator.hasMatch(value.text)
                 ? () => Navigator.of(context).pop(controller.text)
                 : null,
             child: const Text('Create'),

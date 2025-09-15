@@ -39,8 +39,7 @@ class FilesGrid extends StatefulWidget {
 
 class _FilesGridState extends State<FilesGrid> {
   final ScrollController _internalScrollController = ScrollController();
-  ScrollController get scrollController =>
-      widget.controller ?? _internalScrollController;
+  ScrollController get scrollController => widget.controller ?? _internalScrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -67,17 +66,13 @@ class _FilesGridState extends State<FilesGrid> {
               data: entityInfo.file,
               dragAnchorStrategy: (_, _, _) => const Offset(32, 32),
               feedback: Material(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
                 child: Icon(
                   entityInfo.isDirectory
                       ? Utils.iconForFolder(entityInfo.path)
                       : Utils.iconForPath(entityInfo.path),
-                  color: entityInfo.isDirectory
-                      ? Theme.of(context).colorScheme.primary
-                      : null,
+                  color: entityInfo.isDirectory ? Theme.of(context).colorScheme.primary : null,
                   size: 64,
                 ),
               ),
@@ -132,7 +127,7 @@ class FileCell extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         color: selected
-            ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)
             : Colors.transparent,
         child: TimedInkwell(
           onTap: () => onTap?.call(entity),
@@ -152,9 +147,7 @@ class FileCell extends StatelessWidget {
                 icon: entity.isDirectory
                     ? Utils.iconForFolder(entity.path)
                     : Utils.iconForPath(entity.path),
-                iconColor: entity.isDirectory
-                    ? Theme.of(context).colorScheme.primary
-                    : null,
+                iconColor: entity.isDirectory ? Theme.of(context).colorScheme.primary : null,
               ),
             ),
           ),
@@ -165,12 +158,7 @@ class FileCell extends StatelessWidget {
 }
 
 class Cell extends StatelessWidget {
-  const Cell({
-    required this.name,
-    required this.icon,
-    this.iconColor,
-    super.key,
-  });
+  const Cell({required this.name, required this.icon, this.iconColor, super.key});
   final String name;
   final IconData icon;
   final Color? iconColor;
@@ -207,9 +195,7 @@ class _ConstrainedIcon extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return IconTheme(
-          data: Theme.of(
-            context,
-          ).iconTheme.copyWith(size: constraints.biggest.shortestSide),
+          data: Theme.of(context).iconTheme.copyWith(size: constraints.biggest.shortestSide),
           child: child,
         );
       },

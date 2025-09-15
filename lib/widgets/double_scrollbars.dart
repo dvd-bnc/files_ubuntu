@@ -18,8 +18,9 @@ class DoubleScrollbars extends StatelessWidget {
       child: ScrollNotificationIsolater(
         child: MediaQuery(
           data: MediaQueryData(
-            padding: const EdgeInsetsDirectional.only(bottom: 12)
-                .resolve(Directionality.of(context)),
+            padding: const EdgeInsetsDirectional.only(
+              bottom: 12,
+            ).resolve(Directionality.of(context)),
           ),
           child: Scrollbar(
             controller: verticalController,
@@ -28,15 +29,13 @@ class DoubleScrollbars extends StatelessWidget {
               child: ScrollNotificationIsolater(
                 child: MediaQuery(
                   data: MediaQueryData(
-                    padding: const EdgeInsetsDirectional.only(end: 12)
-                        .resolve(Directionality.of(context)),
+                    padding: const EdgeInsetsDirectional.only(
+                      end: 12,
+                    ).resolve(Directionality.of(context)),
                   ),
                   child: Scrollbar(
                     controller: horizontalController,
-                    child: _ScrollReceiver(
-                      direction: Axis.horizontal,
-                      child: child,
-                    ),
+                    child: _ScrollReceiver(direction: Axis.horizontal, child: child),
                   ),
                 ),
               ),
@@ -49,10 +48,7 @@ class DoubleScrollbars extends StatelessWidget {
 }
 
 class _ScrollReceiver extends StatefulWidget {
-  const _ScrollReceiver({
-    required this.direction,
-    required this.child,
-  });
+  const _ScrollReceiver({required this.direction, required this.child});
   final Axis direction;
   final Widget child;
 
@@ -77,10 +73,7 @@ class _ScrollReceiverState extends State<_ScrollReceiver> {
 }
 
 class _ScrollReceiverInheritedWidget extends InheritedWidget {
-  const _ScrollReceiverInheritedWidget({
-    required this.state,
-    required super.child,
-  });
+  const _ScrollReceiverInheritedWidget({required this.state, required super.child});
   final _ScrollReceiverState state;
 
   @override
@@ -90,41 +83,27 @@ class _ScrollReceiverInheritedWidget extends InheritedWidget {
 }
 
 class HorizontalScrollReceiver extends _ScrollReceiverInheritedWidget {
-  const HorizontalScrollReceiver._({
-    required super.state,
-    required super.child,
-  });
+  const HorizontalScrollReceiver._({required super.state, required super.child});
 
   // TODO(@Feichtmeier): fix ignore
   // ignore: library_private_types_in_public_api
   static _ScrollReceiverState of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<HorizontalScrollReceiver>()!
-        .state;
+    return context.dependOnInheritedWidgetOfExactType<HorizontalScrollReceiver>()!.state;
   }
 }
 
 class VerticalScrollReceiver extends _ScrollReceiverInheritedWidget {
-  const VerticalScrollReceiver._({
-    required super.state,
-    required super.child,
-  });
+  const VerticalScrollReceiver._({required super.state, required super.child});
 
   // TODO(@Feichtmeier): fix ignore
   // ignore: library_private_types_in_public_api
   static _ScrollReceiverState of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<VerticalScrollReceiver>()!
-        .state;
+    return context.dependOnInheritedWidgetOfExactType<VerticalScrollReceiver>()!.state;
   }
 }
 
 class ScrollProxy extends StatelessWidget {
-  const ScrollProxy({
-    required this.direction,
-    required this.child,
-    super.key,
-  });
+  const ScrollProxy({required this.direction, required this.child, super.key});
   final Axis direction;
   final Widget child;
 
@@ -150,10 +129,7 @@ class ScrollProxy extends StatelessWidget {
 }
 
 class ScrollNotificationIsolater extends StatelessWidget {
-  const ScrollNotificationIsolater({
-    required this.child,
-    super.key,
-  });
+  const ScrollNotificationIsolater({required this.child, super.key});
   final Widget child;
 
   @override

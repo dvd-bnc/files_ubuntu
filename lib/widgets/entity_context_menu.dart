@@ -50,28 +50,19 @@ class EntityContextMenu extends StatelessWidget {
             leading: const Icon(YaruIcons.copy),
             child: const Text('Copy file'),
             onTap: onCopy,
-            shortcut: const SingleActivator(
-              LogicalKeyboardKey.keyC,
-              control: true,
-            ),
+            shortcut: const SingleActivator(LogicalKeyboardKey.keyC, control: true),
           ),
           ContextMenuItem(
             leading: const Icon(YaruIcons.cut),
             child: const Text('Cut file'),
             onTap: onCut,
-            shortcut: const SingleActivator(
-              LogicalKeyboardKey.keyX,
-              control: true,
-            ),
+            shortcut: const SingleActivator(LogicalKeyboardKey.keyX, control: true),
           ),
           ContextMenuItem(
             leading: const Icon(YaruIcons.paste),
             child: const Text('Paste file'),
             onTap: onPaste,
-            shortcut: const SingleActivator(
-              LogicalKeyboardKey.keyV,
-              control: true,
-            ),
+            shortcut: const SingleActivator(LogicalKeyboardKey.keyV, control: true),
           ),
           const ContextMenuDivider(),
           ContextMenuItem(

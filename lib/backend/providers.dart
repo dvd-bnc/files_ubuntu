@@ -18,21 +18,14 @@ String _isarPath(Directory dir) {
 
 Future<void> initProviders() async {
   final dir = await getApplicationDocumentsDirectory();
-  final isar = await Isar.open(
-    [EntityStatSchema],
-    directory: _isarPath(dir),
-    inspector: false,
-  );
+  final isar = await Isar.open([EntityStatSchema], directory: _isarPath(dir), inspector: false);
   final folderProvider = await FolderProvider.init();
 
   registerServiceInstance<Isar>(isar);
   registerServiceInstance<FolderProvider>(folderProvider);
   registerService<EntityStatCacheHelper>(EntityStatCacheHelper.new);
   registerService<StatCacheProxy>(StatCacheProxy.new);
-  registerService<DriveProvider>(
-    DriveProvider.new,
-    dispose: (s) => s.dispose(),
-  );
+  registerService<DriveProvider>(DriveProvider.new, dispose: (s) => s.dispose());
 }
 
 Isar get isar => getService<Isar>();

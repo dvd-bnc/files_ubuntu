@@ -17,27 +17,11 @@ const EntityStatSchema = CollectionSchema(
   name: r'EntityStat',
   id: -4850955524700233506,
   properties: {
-    r'accessed': PropertySchema(
-      id: 0,
-      name: r'accessed',
-      type: IsarType.dateTime,
-    ),
-    r'changed': PropertySchema(
-      id: 1,
-      name: r'changed',
-      type: IsarType.dateTime,
-    ),
-    r'hasListeners': PropertySchema(
-      id: 2,
-      name: r'hasListeners',
-      type: IsarType.bool,
-    ),
+    r'accessed': PropertySchema(id: 0, name: r'accessed', type: IsarType.dateTime),
+    r'changed': PropertySchema(id: 1, name: r'changed', type: IsarType.dateTime),
+    r'hasListeners': PropertySchema(id: 2, name: r'hasListeners', type: IsarType.bool),
     r'mode': PropertySchema(id: 3, name: r'mode', type: IsarType.long),
-    r'modified': PropertySchema(
-      id: 4,
-      name: r'modified',
-      type: IsarType.dateTime,
-    ),
+    r'modified': PropertySchema(id: 4, name: r'modified', type: IsarType.dateTime),
     r'path': PropertySchema(id: 5, name: r'path', type: IsarType.string),
     r'size': PropertySchema(id: 6, name: r'size', type: IsarType.long),
     r'type': PropertySchema(
@@ -59,13 +43,7 @@ const EntityStatSchema = CollectionSchema(
       name: r'path',
       unique: true,
       replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'path',
-          type: IndexType.hash,
-          caseSensitive: true,
-        ),
-      ],
+      properties: [IndexPropertySchema(name: r'path', type: IndexType.hash, caseSensitive: true)],
     ),
   },
   links: {},
@@ -77,11 +55,7 @@ const EntityStatSchema = CollectionSchema(
   version: '3.3.0-dev.2',
 );
 
-int _entityStatEstimateSize(
-  EntityStat object,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
+int _entityStatEstimateSize(EntityStat object, List<int> offsets, Map<Type, List<int>> allOffsets) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.path.length * 3;
   return bytesCount;
@@ -117,9 +91,7 @@ EntityStat _entityStatDeserialize(
   object.modified = reader.readDateTime(offsets[4]);
   object.path = reader.readString(offsets[5]);
   object.size = reader.readLong(offsets[6]);
-  object.type =
-      _EntityStattypeValueEnumMap[reader.readByteOrNull(offsets[7])] ??
-      EntityType.file;
+  object.type = _EntityStattypeValueEnumMap[reader.readByteOrNull(offsets[7])] ?? EntityType.file;
   return object;
 }
 
@@ -145,20 +117,13 @@ P _entityStatDeserializeProp<P>(
     case 6:
       return (reader.readLong(offset)) as P;
     case 7:
-      return (_EntityStattypeValueEnumMap[reader.readByteOrNull(offset)] ??
-              EntityType.file)
-          as P;
+      return (_EntityStattypeValueEnumMap[reader.readByteOrNull(offset)] ?? EntityType.file) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-const _EntityStattypeEnumValueMap = {
-  'file': 0,
-  'directory': 1,
-  'link': 2,
-  'notFound': 3,
-};
+const _EntityStattypeEnumValueMap = {'file': 0, 'directory': 1, 'link': 2, 'notFound': 3};
 const _EntityStattypeValueEnumMap = {
   0: EntityType.file,
   1: EntityType.directory,
@@ -232,8 +197,7 @@ extension EntityStatByIndex on IsarCollection<EntityStat> {
   }
 }
 
-extension EntityStatQueryWhereSort
-    on QueryBuilder<EntityStat, EntityStat, QWhere> {
+extension EntityStatQueryWhereSort on QueryBuilder<EntityStat, EntityStat, QWhere> {
   QueryBuilder<EntityStat, EntityStat, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
@@ -241,8 +205,7 @@ extension EntityStatQueryWhereSort
   }
 }
 
-extension EntityStatQueryWhere
-    on QueryBuilder<EntityStat, EntityStat, QWhereClause> {
+extension EntityStatQueryWhere on QueryBuilder<EntityStat, EntityStat, QWhereClause> {
   QueryBuilder<EntityStat, EntityStat, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(lower: id, upper: id));
@@ -253,20 +216,12 @@ extension EntityStatQueryWhere
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
-            )
-            .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
-            );
+            .addWhereClause(IdWhereClause.lessThan(upper: id, includeUpper: false))
+            .addWhereClause(IdWhereClause.greaterThan(lower: id, includeLower: false));
       } else {
         return query
-            .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
-            )
-            .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
-            );
+            .addWhereClause(IdWhereClause.greaterThan(lower: id, includeLower: false))
+            .addWhereClause(IdWhereClause.lessThan(upper: id, includeUpper: false));
       }
     });
   }
@@ -276,9 +231,7 @@ extension EntityStatQueryWhere
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.greaterThan(lower: id, includeLower: include),
-      );
+      return query.addWhereClause(IdWhereClause.greaterThan(lower: id, includeLower: include));
     });
   }
 
@@ -287,9 +240,7 @@ extension EntityStatQueryWhere
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.lessThan(upper: id, includeUpper: include),
-      );
+      return query.addWhereClause(IdWhereClause.lessThan(upper: id, includeUpper: include));
     });
   }
 
@@ -311,19 +262,13 @@ extension EntityStatQueryWhere
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterWhereClause> pathEqualTo(
-    String path,
-  ) {
+  QueryBuilder<EntityStat, EntityStat, QAfterWhereClause> pathEqualTo(String path) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'path', value: [path]),
-      );
+      return query.addWhereClause(IndexWhereClause.equalTo(indexName: r'path', value: [path]));
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterWhereClause> pathNotEqualTo(
-    String path,
-  ) {
+  QueryBuilder<EntityStat, EntityStat, QAfterWhereClause> pathNotEqualTo(String path) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -366,27 +311,20 @@ extension EntityStatQueryWhere
   }
 }
 
-extension EntityStatQueryFilter
-    on QueryBuilder<EntityStat, EntityStat, QFilterCondition> {
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> accessedEqualTo(
-    DateTime value,
-  ) {
+extension EntityStatQueryFilter on QueryBuilder<EntityStat, EntityStat, QFilterCondition> {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> accessedEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'accessed', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'accessed', value: value));
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition>
-  accessedGreaterThan(DateTime value, {bool include = false}) {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> accessedGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'accessed',
-          value: value,
-        ),
+        FilterCondition.greaterThan(include: include, property: r'accessed', value: value),
       );
     });
   }
@@ -397,11 +335,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'accessed',
-          value: value,
-        ),
+        FilterCondition.lessThan(include: include, property: r'accessed', value: value),
       );
     });
   }
@@ -425,25 +359,19 @@ extension EntityStatQueryFilter
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> changedEqualTo(
-    DateTime value,
-  ) {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> changedEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'changed', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'changed', value: value));
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition>
-  changedGreaterThan(DateTime value, {bool include = false}) {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> changedGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'changed',
-          value: value,
-        ),
+        FilterCondition.greaterThan(include: include, property: r'changed', value: value),
       );
     });
   }
@@ -454,11 +382,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'changed',
-          value: value,
-        ),
+        FilterCondition.lessThan(include: include, property: r'changed', value: value),
       );
     });
   }
@@ -482,8 +406,7 @@ extension EntityStatQueryFilter
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition>
-  hasListenersEqualTo(bool value) {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> hasListenersEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'hasListeners', value: value),
@@ -493,27 +416,19 @@ extension EntityStatQueryFilter
 
   QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> idIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'id'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNull(property: r'id'));
     });
   }
 
   QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> idIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'id'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNotNull(property: r'id'));
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> idEqualTo(
-    Id? value,
-  ) {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'id', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'id', value: value));
     });
   }
 
@@ -523,11 +438,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
+        FilterCondition.greaterThan(include: include, property: r'id', value: value),
       );
     });
   }
@@ -538,11 +449,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
+        FilterCondition.lessThan(include: include, property: r'id', value: value),
       );
     });
   }
@@ -566,13 +473,9 @@ extension EntityStatQueryFilter
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> modeEqualTo(
-    int value,
-  ) {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> modeEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'mode', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'mode', value: value));
     });
   }
 
@@ -582,11 +485,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'mode',
-          value: value,
-        ),
+        FilterCondition.greaterThan(include: include, property: r'mode', value: value),
       );
     });
   }
@@ -597,11 +496,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'mode',
-          value: value,
-        ),
+        FilterCondition.lessThan(include: include, property: r'mode', value: value),
       );
     });
   }
@@ -625,25 +520,19 @@ extension EntityStatQueryFilter
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> modifiedEqualTo(
-    DateTime value,
-  ) {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> modifiedEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'modified', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'modified', value: value));
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition>
-  modifiedGreaterThan(DateTime value, {bool include = false}) {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> modifiedGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'modified',
-          value: value,
-        ),
+        FilterCondition.greaterThan(include: include, property: r'modified', value: value),
       );
     });
   }
@@ -654,11 +543,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'modified',
-          value: value,
-        ),
+        FilterCondition.lessThan(include: include, property: r'modified', value: value),
       );
     });
   }
@@ -688,11 +573,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'path',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
+        FilterCondition.equalTo(property: r'path', value: value, caseSensitive: caseSensitive),
       );
     });
   }
@@ -758,11 +639,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'path',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
+        FilterCondition.startsWith(property: r'path', value: value, caseSensitive: caseSensitive),
       );
     });
   }
@@ -773,11 +650,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'path',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
+        FilterCondition.endsWith(property: r'path', value: value, caseSensitive: caseSensitive),
       );
     });
   }
@@ -788,11 +661,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'path',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
+        FilterCondition.contains(property: r'path', value: value, caseSensitive: caseSensitive),
       );
     });
   }
@@ -803,38 +672,26 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'path',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
+        FilterCondition.matches(property: r'path', wildcard: pattern, caseSensitive: caseSensitive),
       );
     });
   }
 
   QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> pathIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'path', value: ''),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'path', value: ''));
     });
   }
 
   QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> pathIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'path', value: ''),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(property: r'path', value: ''));
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> sizeEqualTo(
-    int value,
-  ) {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> sizeEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'size', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'size', value: value));
     });
   }
 
@@ -844,11 +701,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'size',
-          value: value,
-        ),
+        FilterCondition.greaterThan(include: include, property: r'size', value: value),
       );
     });
   }
@@ -859,11 +712,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'size',
-          value: value,
-        ),
+        FilterCondition.lessThan(include: include, property: r'size', value: value),
       );
     });
   }
@@ -887,13 +736,9 @@ extension EntityStatQueryFilter
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> typeEqualTo(
-    EntityType value,
-  ) {
+  QueryBuilder<EntityStat, EntityStat, QAfterFilterCondition> typeEqualTo(EntityType value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'type', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'type', value: value));
     });
   }
 
@@ -903,11 +748,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'type',
-          value: value,
-        ),
+        FilterCondition.greaterThan(include: include, property: r'type', value: value),
       );
     });
   }
@@ -918,11 +759,7 @@ extension EntityStatQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'type',
-          value: value,
-        ),
+        FilterCondition.lessThan(include: include, property: r'type', value: value),
       );
     });
   }
@@ -947,14 +784,11 @@ extension EntityStatQueryFilter
   }
 }
 
-extension EntityStatQueryObject
-    on QueryBuilder<EntityStat, EntityStat, QFilterCondition> {}
+extension EntityStatQueryObject on QueryBuilder<EntityStat, EntityStat, QFilterCondition> {}
 
-extension EntityStatQueryLinks
-    on QueryBuilder<EntityStat, EntityStat, QFilterCondition> {}
+extension EntityStatQueryLinks on QueryBuilder<EntityStat, EntityStat, QFilterCondition> {}
 
-extension EntityStatQuerySortBy
-    on QueryBuilder<EntityStat, EntityStat, QSortBy> {
+extension EntityStatQuerySortBy on QueryBuilder<EntityStat, EntityStat, QSortBy> {
   QueryBuilder<EntityStat, EntityStat, QAfterSortBy> sortByAccessed() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'accessed', Sort.asc);
@@ -1052,8 +886,7 @@ extension EntityStatQuerySortBy
   }
 }
 
-extension EntityStatQuerySortThenBy
-    on QueryBuilder<EntityStat, EntityStat, QSortThenBy> {
+extension EntityStatQuerySortThenBy on QueryBuilder<EntityStat, EntityStat, QSortThenBy> {
   QueryBuilder<EntityStat, EntityStat, QAfterSortBy> thenByAccessed() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'accessed', Sort.asc);
@@ -1163,8 +996,7 @@ extension EntityStatQuerySortThenBy
   }
 }
 
-extension EntityStatQueryWhereDistinct
-    on QueryBuilder<EntityStat, EntityStat, QDistinct> {
+extension EntityStatQueryWhereDistinct on QueryBuilder<EntityStat, EntityStat, QDistinct> {
   QueryBuilder<EntityStat, EntityStat, QDistinct> distinctByAccessed() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'accessed');
@@ -1195,9 +1027,7 @@ extension EntityStatQueryWhereDistinct
     });
   }
 
-  QueryBuilder<EntityStat, EntityStat, QDistinct> distinctByPath({
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<EntityStat, EntityStat, QDistinct> distinctByPath({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'path', caseSensitive: caseSensitive);
     });
@@ -1216,8 +1046,7 @@ extension EntityStatQueryWhereDistinct
   }
 }
 
-extension EntityStatQueryProperty
-    on QueryBuilder<EntityStat, EntityStat, QQueryProperty> {
+extension EntityStatQueryProperty on QueryBuilder<EntityStat, EntityStat, QQueryProperty> {
   QueryBuilder<EntityStat, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');

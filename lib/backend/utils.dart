@@ -20,8 +20,7 @@ class Utils {
     'application/vnd.ms-powerpoint': MdiIcons.filePowerpointOutline,
     'application/vnd.openxmlformats-officedocument.presentationml.presentation':
         MdiIcons.filePowerpointOutline,
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-        MdiIcons.fileExcelOutline,
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': MdiIcons.fileExcelOutline,
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
         MdiIcons.fileWordOutline,
     'application/vnd.rar': MdiIcons.zipBoxOutline,

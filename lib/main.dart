@@ -41,9 +41,7 @@ ThemeData? _applyThemeValues(ThemeData? theme) {
   return theme?.copyWith(
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: theme.outlinedButtonTheme.style?.merge(
-        OutlinedButton.styleFrom(
-          backgroundColor: theme.colorScheme.surfaceContainerHighest,
-        ),
+        OutlinedButton.styleFrom(backgroundColor: theme.colorScheme.surfaceContainerHighest),
       ),
     ),
   );
@@ -61,9 +59,7 @@ class Files extends StatelessWidget {
           title: 'Files',
           theme: _applyThemeValues(value.theme),
           darkTheme: _applyThemeValues(value.darkTheme),
-          scrollBehavior: const MaterialScrollBehavior().copyWith(
-            scrollbars: false,
-          ),
+          scrollBehavior: const MaterialScrollBehavior().copyWith(scrollbars: false),
           debugShowCheckedModeBanner: false,
           home: FilesHome(initialDir: initialDir),
         );
@@ -82,9 +78,7 @@ class FilesHome extends StatefulWidget {
 
 class _FilesHomeState extends State<FilesHome> {
   late final List<WorkspaceController> workspaces = [
-    WorkspaceController(
-      initialDir: widget.initialDir ?? folderProvider.destinations.first.path,
-    ),
+    WorkspaceController(initialDir: widget.initialDir ?? folderProvider.destinations.first.path),
   ];
   int currentWorkspace = 0;
 
@@ -105,8 +99,7 @@ class _FilesHomeState extends State<FilesHome> {
                 tabs: workspaces,
                 selectedTab: currentWorkspace,
                 allowClosing: workspaces.length > 1,
-                onTabChanged: (index) =>
-                    setState(() => currentWorkspace = index),
+                onTabChanged: (index) => setState(() => currentWorkspace = index),
                 onTabClosed: (index) {
                   workspaces.removeAt(index);
                   if (index < workspaces.length) {
@@ -137,9 +130,8 @@ class _FilesHomeState extends State<FilesHome> {
                         type: maximized
                             ? YaruWindowControlType.restore
                             : YaruWindowControlType.maximize,
-                        onTap: () => maximized
-                            ? YaruWindow.restore(context)
-                            : YaruWindow.maximize(context),
+                        onTap: () =>
+                            maximized ? YaruWindow.restore(context) : YaruWindow.maximize(context),
                       );
                     },
                   ),

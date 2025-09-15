@@ -65,9 +65,7 @@ class _SidePaneState extends State<SidePane> {
               return const Divider(height: 32);
             }
 
-            return SizedBox(
-              height: YaruMasterDetailTheme.of(context).tileSpacing ?? 0,
-            );
+            return SizedBox(height: YaruMasterDetailTheme.of(context).tileSpacing ?? 0);
           },
           itemBuilder: (context, index) {
             if (index == widget.destinations.length) {
@@ -78,9 +76,7 @@ class _SidePaneState extends State<SidePane> {
               entries: [
                 ContextMenuItem(
                   child: const Text('Open'),
-                  onTap: () => widget.workspace.changeCurrentDir(
-                    widget.destinations[index].path,
-                  ),
+                  onTap: () => widget.workspace.changeCurrentDir(widget.destinations[index].path),
                 ),
                 ContextMenuItem(
                   child: const Text('Open in new tab'),
@@ -97,13 +93,9 @@ class _SidePaneState extends State<SidePane> {
               ],
               child: YaruMasterTile(
                 leading: Icon(widget.destinations[index].icon),
-                selected:
-                    widget.workspace.currentDir ==
-                    widget.destinations[index].path,
+                selected: widget.workspace.currentDir == widget.destinations[index].path,
                 title: Text(widget.destinations[index].label),
-                onTap: () => widget.workspace.changeCurrentDir(
-                  widget.destinations[index].path,
-                ),
+                onTap: () => widget.workspace.changeCurrentDir(widget.destinations[index].path),
               ),
             );
           },

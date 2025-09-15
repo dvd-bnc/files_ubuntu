@@ -49,26 +49,15 @@ class FolderProvider {
     } else if (Platform.isLinux) {
       final dirNames = getUserDirectoryNames();
 
-      final backDir = getUserDirectory(
-        dirNames.first,
-      )!.path.split(Platform.pathSeparator)..removeLast();
-      folders.add(
-        BuiltinFolder(
-          FolderType.home,
-          fs.File.fromPath(backDir.join(Platform.pathSeparator)),
-        ),
-      );
+      final backDir = getUserDirectory(dirNames.first)!.path.split(Platform.pathSeparator)
+        ..removeLast();
+      folders.add(BuiltinFolder(FolderType.home, Directory(backDir.join(Platform.pathSeparator))));
 
       for (final element in dirNames) {
         final type = FolderType.fromString(element);
         if (type == null) continue;
 
-        folders.add(
-          BuiltinFolder(
-            type,
-            fs.File.fromPath(getUserDirectory(element)!.path),
-          ),
-        );
+        folders.add(BuiltinFolder(type, Directory(getUserDirectory(element)!.path)));
       }
     } else {
       throw Exception('Platform not supported');
@@ -107,9 +96,8 @@ enum FolderType {
   templates;
 
   static FolderType? fromString(String value) {
-    return FolderType.values.asNameMap().map(
-      (k, v) => MapEntry(k.toUpperCase(), v),
-    )[value.toUpperCase()];
+    return FolderType.values.asNameMap().map((k, v) => MapEntry(k.toUpperCase(), v))[value
+        .toUpperCase()];
   }
 }
 

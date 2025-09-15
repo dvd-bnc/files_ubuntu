@@ -21,9 +21,7 @@ class DriveList extends StatelessWidget {
       animation: driveProvider,
       builder: (context, _) {
         return SeparatedFlex.vertical(
-          separator: SizedBox(
-            height: YaruMasterDetailTheme.of(context).tileSpacing ?? 0,
-          ),
+          separator: SizedBox(height: YaruMasterDetailTheme.of(context).tileSpacing ?? 0),
           children: driveProvider.blockDevices
               .where(
                 (e) =>
@@ -31,12 +29,8 @@ class DriveList extends StatelessWidget {
                     !e.userspaceMountOptions.contains('x-gvfs-hide'),
               )
               .where((e) => !e.hintIgnore && e.filesystem != null)
-              .where(
-                (e) => driveProvider.supportedFilesystems.contains(e.idType),
-              )
-              .map(
-                (e) => _DriveTile(blockDevice: e, workspace: workspace),
-              )
+              .where((e) => driveProvider.supportedFilesystems.contains(e.idType))
+              .map((e) => _DriveTile(blockDevice: e, onTap: onDriveTap))
               .toList(),
         );
       },
@@ -96,12 +90,8 @@ class _DriveTileState extends State<_DriveTile> {
         ? widget.blockDevice.filesystem!.mountPoints.first.decode()
         : null;
 
-    final idLabel = widget.blockDevice.idLabel.isNotEmpty
-        ? widget.blockDevice.idLabel
-        : null;
-    final hintName = widget.blockDevice.hintName.isNotEmpty
-        ? widget.blockDevice.hintName
-        : null;
+    final idLabel = widget.blockDevice.idLabel.isNotEmpty ? widget.blockDevice.idLabel : null;
+    final hintName = widget.blockDevice.hintName.isNotEmpty ? widget.blockDevice.hintName : null;
 
     return ListTileTheme.merge(
       contentPadding: const EdgeInsets.only(left: 16, right: 8),
@@ -111,11 +101,7 @@ class _DriveTileState extends State<_DriveTile> {
               ? YaruIcons.usb_stick
               : YaruIcons.drive_harddisk,
         ),
-        title: Text(
-          idLabel ??
-              hintName ??
-              '${filesize(widget.blockDevice.size, 1)} drive',
-        ),
+        title: Text(idLabel ?? hintName ?? '${filesize(widget.blockDevice.size, 1)} drive'),
         subtitle: mountPoint != null ? Text(mountPoint) : null,
         trailing: mountPoint != null
             ? YaruOptionButton(

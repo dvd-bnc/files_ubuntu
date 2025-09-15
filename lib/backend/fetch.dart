@@ -6,12 +6,7 @@ import 'package:files/backend/providers.dart';
 import 'package:files/backend/utils.dart';
 import 'package:flutter/foundation.dart';
 
-enum SortType {
-  name,
-  modified,
-  type,
-  size,
-}
+enum SortType { name, modified, type, size }
 
 class CancelableFsFetch {
   final Directory directory;
@@ -47,11 +42,7 @@ class CancelableFsFetch {
     try {
       list = await directory
           .list()
-          .where(
-            (element) =>
-                !Utils.getEntityName(element.path).startsWith('.') ||
-                showHidden,
-          )
+          .where((element) => !Utils.getEntityName(element.path).startsWith('.') || showHidden)
           .toList();
     } on FileSystemException catch (e) {
       onFileSystemException?.call(e.osError);
@@ -78,10 +69,7 @@ class CancelableFsFetch {
         );
         directories.add(info);
       } else if (list[i] is File) {
-        info = FileEntityInfo(
-          entity: list[i] as File,
-          stat: await cacheProxy.get(list[i].path),
-        );
+        info = FileEntityInfo(entity: list[i] as File, stat: await cacheProxy.get(list[i].path));
         files.add(info);
       } else if (list[i] is Link) {
         (list[i] as Link).path;
@@ -99,11 +87,7 @@ class CancelableFsFetch {
     if (!_cancelled) onFetched.call([...directories, ...files]);
   }
 
-  int? _sort(
-    EntityInfo a,
-    EntityInfo b, {
-    bool isDirectory = false,
-  }) {
+  int? _sort(EntityInfo a, EntityInfo b, {bool isDirectory = false}) {
     EntityInfo item1 = a;
     EntityInfo item2 = b;
 
@@ -114,8 +98,9 @@ class CancelableFsFetch {
 
     switch (sortType.index) {
       case 0:
-        return Utils.getEntityName(item1.path.toLowerCase())
-            .compareTo(Utils.getEntityName(item2.path.toLowerCase()));
+        return Utils.getEntityName(
+          item1.path.toLowerCase(),
+        ).compareTo(Utils.getEntityName(item2.path.toLowerCase()));
       case 1:
         return item1.stat.modified.compareTo(item2.stat.modified);
       case 2:

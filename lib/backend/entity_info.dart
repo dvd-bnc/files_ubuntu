@@ -52,41 +52,34 @@ class EntityInfo {
 
   @override
   int get hashCode => Object.hash(
-        entity.path,
-        stat.accessed,
-        stat.changed,
-        stat.mode,
-        stat.modified,
-        stat.size,
-        stat.type,
-        entityType,
-      );
+    entity.path,
+    stat.accessed,
+    stat.changed,
+    stat.mode,
+    stat.modified,
+    stat.size,
+    stat.type,
+    entityType,
+  );
 }
 
 class FileEntityInfo extends EntityInfo {
-  const FileEntityInfo({
-    required File entity,
-    required EntityStat stat,
-  }) : super._(entity, stat, EntityType.file);
+  const FileEntityInfo({required File entity, required EntityStat stat})
+    : super._(entity, stat, EntityType.file);
 
   @override
   File get entity => _entity as File;
 }
 
 class DirectoryEntityInfo extends EntityInfo {
-  const DirectoryEntityInfo({
-    required Directory entity,
-    required EntityStat stat,
-  }) : super._(entity, stat, EntityType.directory);
+  const DirectoryEntityInfo({required Directory entity, required EntityStat stat})
+    : super._(entity, stat, EntityType.directory);
 
   @override
   Directory get entity => _entity as Directory;
 }
 
-enum EntityType {
-  file,
-  directory,
-}
+enum EntityType { file, directory }
 
 extension EntityInfoHelpers on EntityInfo {
   FileEntityInfo get asFile => this as FileEntityInfo;
@@ -98,8 +91,7 @@ extension EntityInfoHelpers on EntityInfo {
 
 extension EntityInfoListHelpers on List<EntityInfo> {
   List<FileEntityInfo> get files => whereType<FileEntityInfo>().toList();
-  List<DirectoryEntityInfo> get directories =>
-      whereType<DirectoryEntityInfo>().toList();
+  List<DirectoryEntityInfo> get directories => whereType<DirectoryEntityInfo>().toList();
 }
 
 /* class EntityStat implements Insertable<EntityStat> {

@@ -13,9 +13,7 @@ class PathParts {
       root = '/';
       separator = '/';
     } else if (path.startsWith(RegExp(r'[A-Z]:\\', caseSensitive: false))) {
-      root = RegExp(r'^[A-Z]:\\', caseSensitive: false)
-          .firstMatch(path)!
-          .group(0)!;
+      root = RegExp(r'^[A-Z]:\\', caseSensitive: false).firstMatch(path)!.group(0)!;
       separator = '\\';
     }
     final cleanPath = path.replaceFirst(root, '');
@@ -50,10 +48,6 @@ class PathParts {
 
   @override
   String toString() {
-    return {
-      'root': root,
-      'parts': parts,
-      'separator': separator,
-    }.toString();
+    return {'root': root, 'parts': parts, 'separator': separator}.toString();
   }
 }

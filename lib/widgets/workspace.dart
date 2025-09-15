@@ -51,10 +51,8 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
 
   @override
   void dispose() {
-    controller.lastHorizontalScrollOffset =
-        horizontalController.lastPosition?.pixels ?? 0;
-    controller.lastVerticalScrollOffset =
-        verticalController.lastPosition?.pixels ?? 0;
+    controller.lastHorizontalScrollOffset = horizontalController.lastPosition?.pixels ?? 0;
+    controller.lastVerticalScrollOffset = verticalController.lastPosition?.pixels ?? 0;
     controller.removeListener(_onControllerUpdate);
     super.dispose();
   }
@@ -100,10 +98,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
   }
 
   Future<String?> promptNewFolder() {
-    return showDialog(
-      context: context,
-      builder: (context) => const FolderDialog(),
-    );
+    return showDialog(context: context, builder: (context) => const FolderDialog());
   }
 
   String get selectedItemsLabel {
@@ -175,10 +170,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
         onChanged: (val) => _setHidden(val!),
         child: const Text('Show hidden files'),
       ),
-      ContextMenuItem(
-        child: const Text('Create new folder'),
-        onTap: _createFolder,
-      ),
+      ContextMenuItem(child: const Text('Create new folder'), onTap: _createFolder),
       const ContextMenuDivider(),
       RadioMenuItem(
         child: const Text('Name'),
@@ -249,10 +241,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
             value: controller,
             child: controller.lastError == null
                 ? getBody(context)
-                : _WorkspaceErrorWidget(
-                    error: controller.lastError!,
-                    path: controller.currentDir,
-                  ),
+                : _WorkspaceErrorWidget(error: controller.lastError!, path: controller.currentDir),
           ),
         ),
         SizedBox(
@@ -301,8 +290,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
           onDropAccept: _onDropAccepted,
           controller: verticalController,
           size: controller.gridState.size,
-          onSizeChange: (value) =>
-              controller.setGridState(GridViewState(size: value)),
+          onSizeChange: (value) => controller.setGridState(GridViewState(size: value)),
         );
       default:
         return FilesTable(
@@ -317,23 +305,14 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
               )
               .toList(),
           columns: [
-            FilesColumn(
-              width: controller.tableState.widths[0],
-              type: FilesColumnType.name,
-            ),
-            FilesColumn(
-              width: controller.tableState.widths[1],
-              type: FilesColumnType.date,
-            ),
+            FilesColumn(width: controller.tableState.widths[0], type: FilesColumnType.name),
+            FilesColumn(width: controller.tableState.widths[1], type: FilesColumnType.date),
             FilesColumn(
               width: controller.tableState.widths[2],
               type: FilesColumnType.type,
               allowSorting: false,
             ),
-            FilesColumn(
-              width: controller.tableState.widths[3],
-              type: FilesColumnType.size,
-            ),
+            FilesColumn(width: controller.tableState.widths[3], type: FilesColumnType.size),
           ],
           ascending: controller.ascending,
           columnIndex: controller.sortType.index,
@@ -348,10 +327,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
           },
           onHeaderResize: (newColumnIndex, details) {
             controller.setTableState(
-              controller.tableState.applyDeltaToWidth(
-                newColumnIndex,
-                details.primaryDelta!,
-              ),
+              controller.tableState.applyDeltaToWidth(newColumnIndex, details.primaryDelta!),
             );
           },
           horizontalController: horizontalController,
@@ -406,9 +382,7 @@ class _WorkspaceTopbar extends StatelessWidget {
         YaruOptionButton(
           onPressed: () {
             final backDir = PathParts.parse(controller.currentDir);
-            controller.changeCurrentDir(
-              backDir.toPath(backDir.parts.length - 1),
-            );
+            controller.changeCurrentDir(backDir.toPath(backDir.parts.length - 1));
           },
           child: const Icon(YaruIcons.go_up, size: 20),
         ),
@@ -428,9 +402,7 @@ class _WorkspaceTopbar extends StatelessWidget {
         if (popupBuilder != null) const SizedBox(width: 8),
         if (popupBuilder != null)
           MenuAnchor(
-            menuChildren: popupBuilder!(
-              context,
-            ).map((e) => e.buildWrapper(context)).toList(),
+            menuChildren: popupBuilder!(context).map((e) => e.buildWrapper(context)).toList(),
             alignmentOffset: const Offset(-8, 8),
             builder: (context, controller, child) {
               return YaruOptionButton(
@@ -529,11 +501,7 @@ class _WorkspaceErrorWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Theme.of(context).colorScheme.primary,
-          ),
+          Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.primary),
           const SizedBox(height: 16),
           Text.rich(
             TextSpan(
@@ -545,9 +513,7 @@ class _WorkspaceErrorWidget extends StatelessWidget {
                 ),
                 TextSpan(
                   text: '\n${error.message}',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  style: TextStyle(color: Theme.of(context).colorScheme.primary),
                 ),
               ],
             ),

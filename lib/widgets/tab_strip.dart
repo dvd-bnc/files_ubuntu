@@ -59,18 +59,10 @@ class TabStrip extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          YaruOptionButton(
-            onPressed: onNewTab,
-            child: const Icon(YaruIcons.plus),
-          ),
+          YaruOptionButton(onPressed: onNewTab, child: const Icon(YaruIcons.plus)),
           const SizedBox(width: 8),
           if (trailing.isNotEmpty)
-            const VerticalDivider(
-              indent: 12,
-              endIndent: 12,
-              width: 1,
-              thickness: 1,
-            ),
+            const VerticalDivider(indent: 12, endIndent: 12, width: 1, thickness: 1),
           ...trailing,
         ],
       ),

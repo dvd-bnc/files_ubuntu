@@ -23,8 +23,7 @@ class DriveProvider with ChangeNotifier {
     _drives.addAll(_client.drives);
 
     _blockDeviceAddSub = _client.blockDeviceAdded.listen(_onBlockDeviceAdded);
-    _blockDeviceRemoveSub =
-        _client.blockDeviceRemoved.listen(_onBlockDeviceRemoved);
+    _blockDeviceRemoveSub = _client.blockDeviceRemoved.listen(_onBlockDeviceRemoved);
 
     _driveAddSub = _client.driveAdded.listen(_onDriveAdded);
     _driveRemoveSub = _client.driveRemoved.listen(_onDriveRemoved);

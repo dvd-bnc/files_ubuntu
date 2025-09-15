@@ -19,9 +19,7 @@ class _FolderDialogState extends State<FolderDialog> {
       title: const Text('New Folder'),
       content: TextField(
         autofocus: true,
-        decoration: const InputDecoration(
-          hintText: 'Folder name',
-        ),
+        decoration: const InputDecoration(hintText: 'Folder name'),
         controller: controller,
         onSubmitted: (value) {
           Navigator.pop(context, value);
@@ -36,11 +34,10 @@ class _FolderDialogState extends State<FolderDialog> {
         ),
         ValueListenableBuilder<TextEditingValue>(
           valueListenable: controller,
-          builder: (context, value, __) => TextButton(
-            onPressed:
-                value.text.isNotEmpty && folderValidator.hasMatch(value.text)
-                    ? () => Navigator.of(context).pop(controller.text)
-                    : null,
+          builder: (context, value, _) => TextButton(
+            onPressed: value.text.isNotEmpty && folderValidator.hasMatch(value.text)
+                ? () => Navigator.of(context).pop(controller.text)
+                : null,
             child: const Text('Create'),
           ),
         ),
